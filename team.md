@@ -13,3 +13,8 @@ For the last two and a half years, I have been focused on front-end development,
 
 # About Thomas
 Hey, my name is Thomas. I earned my B.S. in Biology with the goal of attending medical school, but the 100+ hours of work every week with endless studying for the next decade was fairly daunting due to my lack of passion for the field so I decided to pivot my career into software development. I'm currently pursuing my M.S. in Computer Science and I plan to graduate at the end of this semester. In my free time, I work with a small team of 6 developers to build a web app called ShipSentry using TypeScript, React, Node.js, Next.js, Golang, and the Google Cloud Platform. I'm looking forward to working with my team and improving as a developer over the next 6 weeks.
+
+# About Grant
+Hello my name is Grant Hovey, I'm working on my MS in software engineering.
+I have a BS in Electrical Engineering from Bradley University and I am currently employed at John Deere in the Intelligent Solutions Group developing software for autonomous farming operations on an embedded Linux platform using mostly C++  and MATLAB/Simulink. My undergrad capstone project was mobile target tracking using an EKF-SLAM algorithm https://ee.bradley.edu/projects/proj2018/slamdar/ 
+For fun I play a few musical instruments and frequently travel, mostly for concerts and music festivals
