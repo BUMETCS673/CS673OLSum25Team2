@@ -1,2 +1,2 @@
-# GroupProjectTemplate
-Please make sure to modify this readme file as well as the "about" property of the project!
+# My Magical Bedtime
+My Magical Bedtime is a story generator app that creates personalized bedtime tales for preschoolers aged 3-5, helping parents deliver fresh, engaging content that supports early childhood development.
