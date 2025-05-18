@@ -18,3 +18,6 @@ Hey, my name is Thomas. I earned my B.S. in Biology with the goal of attending m
 Hello my name is Grant Hovey, I'm working on my MS in software engineering.
 I have a BS in Electrical Engineering from Bradley University and I am currently employed at John Deere in the Intelligent Solutions Group developing software for autonomous farming operations on an embedded Linux platform using mostly C++  and MATLAB/Simulink. My undergrad capstone project was mobile target tracking using an EKF-SLAM algorithm https://ee.bradley.edu/projects/proj2018/slamdar/ 
 For fun I play a few musical instruments and frequently travel, mostly for concerts and music festivals
+
+# About Xuelin(Barry) Min
+Hi, my name is Xuelin Min. I'm currently pursuing a Master's degree in Computer Science at Boston University, and I hold a Bachelor's degree in Computer Science with a Math minor from Penn State. I have hands-on experience with Python, C++, Java, R, and HTML, and have worked on several AI-driven projects, including an item recommendation system for a swapping app and a vocabulary-learning assistant using visuals and audio. I'm also familiar with classification models and data analysis using R. I enjoy solving real-world problems through code, and I’m particularly interested in backend systems, recommendation algorithms, and machine learning applications. 
