@@ -20,6 +20,7 @@ services:
       - NODE_ENV=development
     networks:
       - app-network
+
   mongo:
     image: mongo
     volumes:
@@ -28,6 +29,7 @@ services:
       - "27017:27017"
     networks:
       - app-network
+
   client:
     build:
       context: ./client
@@ -46,11 +48,11 @@ services:
       - app-network
 
 networks:
-    app-network:
-        driver: bridge
+  app-network:
+    driver: bridge
 
 volumes:
-    data-volume:
-    node_modules:
-    web-root:
-      driver: local
+  data-volume:
+  node_modules:
+  web-root:
+    driver: local
