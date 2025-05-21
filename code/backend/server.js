@@ -2,12 +2,15 @@ require('dotenv').config();
 
 const express = require('express');
 const mongoose = require('mongoose');
-
+const userRoutes = require('./routes/user');
 // express app
 const app = express();
 
 // middleware
 app.use(express.json());
+
+// routes
+app.use('/api/user', userRoutes);
 
 // connect to mongodb
 mongoose.connect(process.env.MONGO_URI, {
@@ -16,8 +19,9 @@ mongoose.connect(process.env.MONGO_URI, {
 })
 .then(() => {
   // listen for requests
-  app.listen(process.env.PORT || 3000, () => {
-    console.log('listening on port 3000');
+  const port = process.env.PORT || 5000;
+  app.listen(port, () => {
+    console.log('listening on http://localhost:' + port);
   });
 
   console.log('Connected to MongoDB');
@@ -26,14 +30,8 @@ mongoose.connect(process.env.MONGO_URI, {
   console.log(err); 
 })
 
-
-
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   next();
 })
 
-// register a route
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
