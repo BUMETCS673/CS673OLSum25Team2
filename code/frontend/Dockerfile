@@ -12,7 +12,7 @@ RUN npm install
 COPY . .
 
 # Expose the port the app will run on
-EXPOSE 3000
+EXPOSE 5173
 
 # Command to run the app in development mode with hot reloading
-CMD ["npm", "start"]
+CMD ["npm", "run", "start", "--", "--host", "0.0.0.0", "--port", "5173"]

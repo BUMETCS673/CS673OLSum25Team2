@@ -15,7 +15,7 @@ RUN npm install -g nodemon
 COPY . .
 
 # Expose the port the API will run on
-EXPOSE 5000
+EXPOSE 5500
 
 # Command to run the API with nodemon for auto-reloading
-CMD ["npm", "dev"]
+CMD ["npm", "run","dev"]
