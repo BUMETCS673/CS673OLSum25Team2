@@ -1,4 +1,4 @@
-const User = require('../models/userModel');
+const User = require('../models/UserModel');
 const jwt = require('jsonwebtoken');
 
 const createToken = (_id) => {
@@ -23,12 +23,12 @@ const loginUser = async(req, res) => {
 }
 
 // register user
-const registerUser = async (req, res) => {
+const signupUser = async (req, res) => {
 
   const { email, password, firstName, lastName } = req.body;
 
   try {
-    const user = await User.register(email, password, firstName, lastName);
+    const user = await User.signup(email, password, firstName, lastName);
 
     // create token
     const token = createToken(user._id);
@@ -48,6 +48,6 @@ const logoutUser = (req, res) => {
 
 module.exports = {
   loginUser,
-  registerUser,
+  signupUser,
   logoutUser
 }

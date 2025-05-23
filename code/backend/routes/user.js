@@ -1,14 +1,14 @@
 const express = require('express');
 
 // controller functions
-const { loginUser, registerUser, logoutUser, getUserProfile } = require('../controllers/userController');
+const { loginUser, signupUser, logoutUser, getUserProfile } = require('../controllers/userController');
 const router = express.Router();
 
 // Login route
 router.post('/login', loginUser);
 
 // Register route
-router.post('/register', registerUser);
+router.post('/signup', signupUser);
 
 // Logout route
 router.post('/logout', logoutUser);
