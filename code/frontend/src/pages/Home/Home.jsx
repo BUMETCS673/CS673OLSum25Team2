@@ -1,18 +1,19 @@
-import React from "react";
-import { useNavigate } from "react-router-dom"; 
 import "./Home.css";
 import MainImage from "../../assets/main_screen_image.png";
+import Navbar from "../../components/Navbar/Navbar";
 
 const Home = () => {
-  const navigate = useNavigate(); 
 
   return (
+    
     <section className="Home">
-      <nav className="main-container">
+      <Navbar />
+      
+      {/* <nav className="main-container">
         <button className="home-signin-btn" onClick={() => navigate("/login")}>
           SIGN IN
         </button>
-      </nav>
+      </nav> */}
       <div className="main-container home-screen-container">
         <img src={MainImage} alt="Main" className="main-image" />
         <div className="home-text-overlay">

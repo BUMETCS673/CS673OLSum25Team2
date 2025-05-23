@@ -5,12 +5,16 @@ import SignInImg from "../../assets/signin_image.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
-
+import { useGoogleLogin } from '@react-oauth/google';
 import { useLogin } from "../../hooks/useLogin";
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { login, error, isLoading } = useLogin();
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: tokenResponse => console.log(tokenResponse),
+  });
 
   const signInUser = async (e) => {
     e.preventDefault();
@@ -69,10 +73,12 @@ const SignIn = () => {
             <p>OR</p>
             <span></span>
           </div>
-          <button className="google-btn">
+          <button className="google-btn" onClick={() => googleLogin()}>
             <FontAwesomeIcon icon={faGoogle} className="icon" />
             Continue with Google
           </button>
+
+      
         </div>
       </div>
 
