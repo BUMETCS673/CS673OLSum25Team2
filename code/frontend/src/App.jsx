@@ -2,10 +2,13 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  BrowserRouter,
+  BrowserRouter
 } from "react-router-dom";
 import Home from "./pages/Home/Home";
-import  "./App.css";
+import "./App.css";
+import SignIn from "./pages/SignIn/SignIn";
+import SignUp from "./pages/SighUp/SignUp";
+
 
 function App() {
   return (
@@ -18,10 +21,8 @@ function App() {
             <Route path="/reading" element={<h1>Reading Experience</h1>} />
             <Route path="/profiles" element={<h1>Profiles</h1>} />
             <Route path="/story" element={<h1>Story Management</h1>} />
-            <Route
-              path="/authentication"
-              element={<h1>Authentication Module</h1>}
-            />
+            <Route path="/login" element={<SignIn/>} />
+            <Route path="/authentication" element={<SignUp/>} />
           </Routes>
         </div>
       </BrowserRouter>
