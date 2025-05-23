@@ -1,0 +1,34 @@
+@import url("https://fonts.googleapis.com/css2?family=Love+Ya+Like+A+Sister&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  color-scheme: light dark;
+  color: #f0f6ff;
+  background-color: #d8dde9;
+
+  border: none;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --white: #f0f6ff;
+  --dark: #0c142c;
+  --accent: #fab47e;
+  --main-gradient: linear-gradient(
+    160deg,
+    rgb(9, 16, 36) 0%,
+    rgb(11, 40, 87) 100%
+  );
+  --button-gradient: linear-gradient(
+    160deg,
+    rgba(49, 240, 255, 1) 0%,
+    rgba(250, 180, 126, 1) 100%
+  );
+  --main-font: "Montserrat", sans-serif;
+  --accent-font: "Love Ya Like A Sister";
+}
+.main-container {
+  max-width: 1280px;
+  margin: 0 auto;
+}
