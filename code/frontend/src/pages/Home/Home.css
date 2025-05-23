@@ -4,6 +4,7 @@
   width: 100%;
   min-height: 100vh;
   background: var(--main-gradient);
+  padding: 8px 24px 8px 0;
 }
 
 .Home nav {
@@ -116,7 +117,7 @@
 
 @media only screen and (max-width: 1024px) {
   .Home {
-    padding-bottom: 100px;
+    padding: 24px 24px 100px 24px;
   }
   .home-text-overlay {
     right: 0;
@@ -175,11 +176,10 @@
     height: auto;
     max-height: 40vh;
     object-fit: contain;
-    top: 40%
+    top: 40%;
   }
 }
 @media only screen and (max-width: 420px) {
-
   .home-text-overlay h1 {
     font-size: 54px;
   }
@@ -189,7 +189,7 @@
     height: auto;
     max-height: 40vh;
     object-fit: contain;
-    top: 44%
+    top: 44%;
   }
 }
 
