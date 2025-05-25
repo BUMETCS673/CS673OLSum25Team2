@@ -6,7 +6,7 @@
     "start": "nodemon server.js",
     "dev": "nodemon server.js",
     "test": "jest --ci --coverage",
-    "test:dev": "jest --watchAll --detectOpenHandles",
+    "test:dev": "jest --watchAll --detectOpenHandles"
   },
   "keywords": [],
   "author": "",
