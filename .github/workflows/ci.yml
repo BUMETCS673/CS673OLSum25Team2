@@ -1,0 +1,59 @@
+name: CI - Build and Test MERN Stack
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+
+jobs:
+  build-and-test:
+    name: Build and Test Frontend & Backend
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: .
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      # Install and test backend
+      - name: Install Backend Dependencies
+        working-directory: ./backend
+        run: npm install
+
+      - name: Test Backend
+        working-directory: ./backend
+        run: |
+          if npm run test; then
+            echo "Backend tests passed"
+          else
+            echo "Backend tests failed"
+            exit 1
+          fi
+
+      # Install, build, and test frontend
+      - name: Install Frontend Dependencies
+        working-directory: ./frontend
+        run: npm install
+
+      - name: Build Frontend
+        working-directory: ./frontend
+        run: npm run build
+
+      - name: Test Frontend
+        working-directory: ./frontend
+        run: |
+          if npm run test; then
+            echo "Frontend tests passed"
+          else
+            echo "Frontend tests failed"
+            exit 1
+          fi
