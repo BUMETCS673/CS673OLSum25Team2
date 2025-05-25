@@ -31,7 +31,7 @@ jobs:
       - name: Test Backend
         working-directory: ./code/backend
         run: |
-          if npm run test:ci; then
+          if npm run test; then
             echo "Backend tests passed"
           else
             echo "Backend tests failed"
@@ -50,7 +50,7 @@ jobs:
       - name: Test Frontend
         working-directory: ./code/frontend
         run: |
-          if npm run test:ci; then
+          if npm run test; then
             echo "Frontend tests passed"
           else
             echo "Frontend tests failed"
