@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "echo \"No frontend tests yet\" && exit 0"
+  }
 }
   },
   "dependencies": {
