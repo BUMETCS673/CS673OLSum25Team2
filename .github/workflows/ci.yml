@@ -25,11 +25,11 @@ jobs:
 
       # Install and test backend
       - name: Install Backend Dependencies
-        working-directory: ./backend
+        working-directory: ./code/backend
         run: npm install
 
       - name: Test Backend
-        working-directory: ./backend
+        working-directory: ./code/backend
         run: |
           if npm run test; then
             echo "Backend tests passed"
@@ -40,15 +40,15 @@ jobs:
 
       # Install, build, and test frontend
       - name: Install Frontend Dependencies
-        working-directory: ./frontend
+        working-directory: ./code/frontend
         run: npm install
 
       - name: Build Frontend
-        working-directory: ./frontend
+        working-directory: ./code/frontend
         run: npm run build
 
       - name: Test Frontend
-        working-directory: ./frontend
+        working-directory: ./code/frontend
         run: |
           if npm run test; then
             echo "Frontend tests passed"
