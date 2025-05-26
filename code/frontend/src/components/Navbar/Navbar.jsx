@@ -3,6 +3,7 @@ import "./Navbar.css";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { useLogout } from "../../hooks/useLogout";
+import Logo from "../../assets/logo.png";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -36,7 +37,7 @@ const Navbar = () => {
       <nav className={`navbar ${isScrolled ? "scrolled" : ""}`}>
         <div className="navbar-container">
           <Link to="/" className="navbar-logo">
-            My Magical Bedtime
+            <img src={Logo} alt="logo" />
           </Link>
 
           <ul className={`navbar-menu ${isMobileMenuOpen ? "active" : ""}`}>
@@ -100,7 +101,7 @@ const Navbar = () => {
                 <li>
                   <Link
                     to="/login"
-                    className="navbar-cta"
+                    className="navbar-cta navbar-cta-signin"
                     onClick={closeMobileMenu}
                   >
                     SIGN IN
