@@ -1,0 +1,61 @@
+.story-container {
+  height: 100vh;
+  background-image: url('/assets/StoryCustomizationBackground.png'); 
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.story-panel {
+  background: linear-gradient(to right, #5ce0e6, #f69c4c);
+  border-radius: 20px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  max-width: 600px;
+  width: 90%;
+}
+
+.story-row p {
+  font-family: var(--main-font, sans-serif);
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #111;
+}
+
+.story-options {
+  display: flex;
+  gap: 12px;
+}
+
+.story-option {
+  background-color: #111;
+  border: none;
+  border-radius: 8px;
+  width: 100%;
+  height: 50px;
+  flex: 1;
+  cursor: pointer;
+}
+
+.generate-btn {
+  margin-top: 30px;
+  padding: 14px 28px;
+  background-color: #f69c4c;
+  color: #111;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.generate-btn:hover {
+  background-color: #dd8440;
+}
