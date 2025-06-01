@@ -1,0 +1,10 @@
+.dashboard-container {
+  padding-top: 6rem;
+  font-family: var(--main-font);
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: var(--main-gradient);
+  height: 100vh;
+  overflow: hidden;
+}

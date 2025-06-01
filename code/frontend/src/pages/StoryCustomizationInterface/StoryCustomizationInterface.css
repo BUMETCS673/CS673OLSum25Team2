@@ -1,0 +1,201 @@
+.story-container {
+  height: 100vh;
+  background-image: url("../../assets/StoryCustomizationBackground.png");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.story-panel {
+  background: #ffffff;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.02) 99%
+  );
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  max-width: 800px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.panel-content {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.left-menu {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: transparent;
+  gap: 16px;
+  padding: 24px;
+  border: none;
+  border-radius: 10px;
+}
+.left-menu p {
+  color: var(--white);
+  text-align: center;
+  font-family: var(--main-font);
+  font-weight: 600;
+  font-size: 18px;
+  text-transform: uppercase;
+}
+.left-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.left-buttons button {
+  padding: 20px 12px;
+  background-color: transparent;
+  font-family: var(--accent-font);
+  color: var(--white);
+  font-weight: 800;
+  font-size: 24px;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  transition: all ease-in-out 0.3s;
+}
+
+.left-buttons button.active,
+.left-buttons button:hover {
+  background: var(--button-gradient);
+  color: var(--dark);
+}
+
+.right-panel {
+  flex: 4;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.option-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+.option-button {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--white);
+  font-family: var(--main-font);
+  color: var(--dark);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.option-button:hover {
+  background-color: var(--accent);
+  color: var(--dark);
+}
+
+.option-button.selected {
+  border: 1px solid var(--dark);
+  background-color: var(--accent);
+  color: var(--dark);
+}
+
+.generate-btn {
+  align-self: center;
+  margin-top: 20px;
+  margin-bottom: 24px;
+  padding: 14px 28px;
+  background-color: var(--accent);
+  color: var(--dark);
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.generate-btn:hover:enabled {
+  background: var(--button-gradient);
+}
+
+.generate-btn:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .story-panel {
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .panel-content {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .left-menu {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .left-buttons {
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 8px;
+  }
+
+  .left-buttons button {
+    font-size: 18px;
+    padding: 8px 12px;
+  }
+
+  .left-menu p {
+    font-size: 18px;
+  }
+
+  .option-grid {
+    gap: 10px;
+  }
+
+  .option-button {
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  .generate-btn {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 460px) {
+  .option-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 380px) {
+  .left-buttons button {
+    font-size: 12px;
+  }
+}
