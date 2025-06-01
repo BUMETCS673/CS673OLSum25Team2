@@ -1,8 +1,8 @@
-name: CI - Build and Test MERN Stack
+name: CI/CD - Build, Test, and Deploy MERN Stack
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
 
 jobs:
@@ -56,3 +56,23 @@ jobs:
             echo "Frontend tests failed"
             exit 1
           fi
+
+  deploy-backend:
+    name: Deploy Backend to Heroku
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.14
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "mymagicalbedtime" 
+          heroku_email: "hong.zhang94@gmail.com" 
+          appdir: "code/backend" # Deploy only the backend directory
