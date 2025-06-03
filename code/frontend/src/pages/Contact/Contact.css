@@ -1,0 +1,220 @@
+.Contact {
+  padding-top: 5rem;
+  font-family: var(--main-font);
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: var(--main-gradient);
+  height: 100vh;
+  overflow: hidden;
+}
+
+.contact-screen-container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.contact-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: auto;
+  height: 100%;
+  max-width: none;
+  z-index: 0;
+  object-fit: cover;
+}
+
+.contact-form-overlay {
+  position: absolute;
+  top: 50%;
+  right: 5%;
+  transform: translateY(-50%);
+  text-align: right;
+  z-index: 1;
+  max-width: 500px;
+  width: 40%;
+}
+
+.contact-form-overlay h1 {
+  color: var(--accent);
+  font-family: var(--accent-font);
+  font-size: 80px;
+  line-height: 100%;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.contact-form-overlay h3 {
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 120%;
+  color: var(--white);
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: flex-end;
+}
+
+.contact-input,
+.contact-textarea {
+  width: 100%;
+  padding: 16px 24px;
+  font-family: var(--main-font);
+  font-size: 18px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  color: var(--white);
+  transition: all ease-in-out 300ms;
+  backdrop-filter: blur(10px);
+}
+
+.contact-input::placeholder,
+.contact-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.contact-input:focus,
+.contact-textarea:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid var(--accent);
+}
+
+.contact-textarea {
+  resize: vertical;
+  min-height: 120px;
+  font-family: var(--main-font);
+}
+
+.contact-submit-btn {
+  margin-top: 20px;
+  font-family: var(--main-font);
+  font-weight: 600;
+  font-size: 20px;
+  color: var(--dark);
+  border: 1px solid var(--accent);
+  border-radius: 20px;
+  background-color: var(--accent);
+  padding: 14px 40px;
+  cursor: pointer;
+  transition: all ease-in-out 500ms;
+  width: fit-content;
+}
+
+.contact-submit-btn:hover {
+  color: var(--dark);
+  border: 1px solid transparent;
+  background: var(--button-gradient);
+}
+
+@media only screen and (max-width: 1400px) {
+  .contact-image {
+    width: 50%;
+  }
+}
+
+@media only screen and (max-width: 1280px) {
+  .contact-image {
+    width: 50%;
+  }
+  .contact-form-overlay {
+    right: 3%;
+    padding-right: 48px;
+    width: 45%;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .contact-form-overlay {
+    position: static;
+    transform: none;
+    max-width: 100%;
+    width: 100%;
+    padding: 40px;
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .contact-form-overlay h1 {
+    font-size: 60px;
+  }
+
+  .contact-form-overlay h3 {
+    font-size: 20px;
+  }
+
+  .contact-form {
+    align-items: center;
+  }
+
+  .contact-submit-btn {
+    font-size: 18px;
+    padding: 12px 32px;
+  }
+
+  .contact-image {
+    position: static;
+    width: 100%;
+    height: auto;
+    max-height: 40vh;
+    object-fit: contain;
+    margin-top: 20px;
+  }
+
+  .contact-screen-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .contact-form-overlay {
+    padding: 20px;
+  }
+
+  .contact-form-overlay h1 {
+    font-size: 50px;
+  }
+
+  .contact-form-overlay h3 {
+    font-size: 18px;
+    margin-bottom: 30px;
+  }
+
+  .contact-input,
+  .contact-textarea {
+    font-size: 16px;
+    padding: 12px 20px;
+  }
+
+  .contact-submit-btn {
+    font-size: 16px;
+    padding: 10px 24px;
+    margin-top: 10px;
+  }
+
+  .contact-image {
+    max-height: 30vh;
+  }
+}
+
+@media only screen and (max-width: 420px) {
+  .contact-form-overlay h1 {
+    font-size: 40px;
+  }
+
+  .contact-form-overlay h3 {
+    font-size: 16px;
+  }
+}
