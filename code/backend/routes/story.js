@@ -3,7 +3,9 @@ const router = express.Router();
 const { validateStoryInput } = require('../middleware/validateStoryInput');
 const { requireAuth } = require('../middleware/requireAuth');
 const {
-  generateCompleteStory,
+  generateStory,
+  generateImage,
+  generateAudio,
   getUserStories,
   getStory,
   saveStory,
@@ -13,8 +15,14 @@ const {
 //Apply authentication to all routes
 router.use(requireAuth);
 
-// Generate complete story with image
-router.post('/generate', validateStoryInput, generateCompleteStory);
+// Generate complete story 
+router.post('/generate/story', validateStoryInput, generateStory);
+
+// Generate image
+router.post('/generate/image', generateImage);
+
+// Generate audio
+router.post('/generate/audio', generateAudio);
 
 // Get user's stories
 router.get('/', getUserStories);

@@ -27,18 +27,40 @@ services:
     volumes:
       - ./backend:/app
       - /app/node_modules
-    # depends_on:
-    #   - mongodb
     environment:
       - NODE_ENV=development
       - PORT=5500
-      - CORS_ORIGIN=http://localhost:5173  # Allow frontend to connect
-
+      - CORS_ORIGIN=http://localhost:5173
     stdin_open: true
     tty: true
-      # - MONGODB_URI=mongodb://mongodb:27017/mymagicalbedtime
-      # - JWT_SECRET=your_jwt_secret_key_here
-      # - JWT_EXPIRES_IN=15m
-      # - REFRESH_TOKEN_SECRET=your_refresh_token_secret_here
-      # - REFRESH_TOKEN_EXPIRES_IN=7d
 
+  # Backend Testing
+  backend-test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: my-magical-bedtime-backend-test
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=test
+      - OPENAI_API_KEY=dummy-key-for-testing
+    command: npm test
+    profiles:
+      - test
+
+  # Frontend Testing
+  frontend-test:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: my-magical-bedtime-frontend-test
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=test
+    command: npm test
+    profiles:
+      - test

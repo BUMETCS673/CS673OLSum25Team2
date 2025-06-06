@@ -1,7 +1,9 @@
 import { useState } from "react";
-import CharacterCarousel from "./CharacterCarousel";
-import "./StoryCustomizationInterface.css";
-import StoryRenderingView from "../StoryRenderingView/StoryRenderingView";
+import CharacterCarousel from "../../components/CharacterCarousel/CharacterCarousel";
+import "./GenerateStory.css";
+import StoryRenderingView from "../../components/StoryRenderingView/StoryRenderingView";
+import { useGenerateStory } from "../../hooks/Story/useGenerateStory";
+import { useStoryContext } from "../../hooks/Story/useStoryContext";
 
 // Theme and setting options
 const themes = [
@@ -36,27 +38,41 @@ const settings = [
   "Jungle",
   "Beach",
   "Zoo",
-  "Treehouse",
+  "Tree house",
   "Library",
 ];
 
-const StoryCustomizationInterface = () => {
-
+const GenerateStory = () => {
   // UI state for current menu and user selection
   const [activeMenu, setActiveMenu] = useState("character");
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [selectedTheme, setSelectedTheme] = useState(null);
   const [selectedSetting, setSelectedSetting] = useState(null);
   const [storyGenerated, setStoryGenerated] = useState(false);
-
   // Check if all options are selected before enabling the GENERATE A STORY button
   const isReady = selectedCharacter && selectedTheme && selectedSetting;
+  const {
+    generateStory,
+    isLoadingStory,
+    isStoryComplete,
+    isLoadingImage,
+    isImageComplete,
+    isLoadingAudio,
+    isAudioComplete,
+    errorStory
+  } = useGenerateStory();
+  const { generatedStory } = useStoryContext();
 
   // Trigger story generation view
-  const generateStoryHandler = () => {
-    
+  const generateStoryHandler = async () => {
     console.log(selectedCharacter, selectedTheme, selectedSetting);
     setStoryGenerated(true);
+    await generateStory({ selectedCharacter, selectedTheme, selectedSetting });
+
+    if (errorStory) {
+      console.error("Error generating story:", errorStory);
+      return;
+    }
   };
 
   // Renders content in the right panel based on current active menu
@@ -114,10 +130,21 @@ const StoryCustomizationInterface = () => {
     <div className="story-container">
       <div className="story-panel">
         {storyGenerated ? (
-          // Show the story view once generated
-          <StoryRenderingView
-            onBackToSettings={() => setStoryGenerated(false)}
-          />
+          isLoadingStory ? (
+
+            // TODO : Add loading animation
+            <>
+              <div className="loading">Loading...</div>
+              isLoadingStory: {isLoadingStory ? "true" : "false"} -- isStoryComplete: {isStoryComplete ? "true" : "false"}<br />
+              isLoadingImage: {isLoadingImage ? "true" : "false"} -- isImageComplete: {isImageComplete ? "true" : "false"} <br />
+              isLoadingAudio: {isLoadingAudio ? "true" : "false"} -- isAudioComplete: {isAudioComplete ? "true" : "false"}
+            </>
+          ) : (
+            <StoryRenderingView
+              onBackToSettings={() => setStoryGenerated(false)}
+              generateStory={generatedStory}
+            />
+          )
         ) : (
           <>
             <div className="panel-content">
@@ -164,7 +191,7 @@ const StoryCustomizationInterface = () => {
   );
 };
 
-export default StoryCustomizationInterface;
+export default GenerateStory;
 
 /** @ai-generated 
 Basic structure of the component was AI generated

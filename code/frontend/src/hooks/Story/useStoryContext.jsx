@@ -1,13 +1,12 @@
-import StoryContext from '../../context/StoryContext';
-import { useContext } from 'react';
+import { useContext } from "react";
+import { StoryContext } from "../../context/StoryContext";
 
 export const useStoryContext = () => {
   const context = useContext(StoryContext);
 
   if (!context) {
-    throw Error('useStoryContext must be used inside a StoryContextProvider');
+    throw new Error("useStoryContext must be used within a StoryContextProvider");
   }
 
   return context;
-}
-
+};

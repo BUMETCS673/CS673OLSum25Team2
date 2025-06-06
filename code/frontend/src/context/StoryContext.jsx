@@ -7,7 +7,15 @@ export const StoryReducer = (state, action) => {
     case "GENERATE_STORY":
       return {
         ...state,
+        generatedStory: action.payload,
         stories: [action.payload, ...state.stories],
+        loading: false,
+        error: null,
+      };
+    case "GET_STORY":
+      return {
+        ...state,
+        currentStory: action.payload,
         loading: false,
         error: null,
       };
@@ -15,14 +23,6 @@ export const StoryReducer = (state, action) => {
       return {
         ...state,
         stories: action.payload,
-        loading: false,
-        error: null,
-      };
-
-    case "DELETE_STORY":
-      return {
-        ...state,
-        stories: state.stories.filter((story) => story._id !== action.payload),
         loading: false,
         error: null,
       };
@@ -58,20 +58,6 @@ export const StoryReducer = (state, action) => {
             : state.currentStory,
       };
 
-   
-    
-      return {
-        ...state,
-        error: action.payload,
-        loading: false,
-      };
-
-    case "SET_FILTERS":
-      return {
-        ...state,
-        filters: { ...state.filters, ...action.payload },
-      };
-
     default:
       return state;
   }
@@ -79,34 +65,14 @@ export const StoryReducer = (state, action) => {
 
 export const StoryContextProvider = ({ children }) => {
   const initialState = {
+    generatedStory: null,
     stories: [],
     currentStory: null,
-    generationParams: {
-      characters: [],
-      setting: "",
-      theme: "",
-      ageGroup: "3-5",
-      style: "watercolor",
-    },
-    filters: {
-      childId: null,
-      theme: "",
-      favorites: false,
-      page: 1,
-      limit: 10,
-    },
-    stats: {
-      totalStories: 0,
-      favoriteStories: 0,
-      totalReads: 0,
-      themes: [],
-    },
     loading: false,
     error: null,
   };
 
   const [state, dispatch] = useReducer(StoryReducer, initialState);
-
 
   return (
     <StoryContext.Provider value={{ ...state, dispatch }}>
@@ -114,72 +80,3 @@ export const StoryContextProvider = ({ children }) => {
     </StoryContext.Provider>
   );
 };
-
-
-// ============================================
-
-// Example usage in a component:
-
-/*
-import { useStoryContext, storyActions } from '../context/StoryContext';
-
-const StoryComponent = () => {
-  const { stories, currentStory, loading, error, dispatch } = useStoryContext();
-
-  // Load stories
-  const loadStories = async () => {
-    dispatch(storyActions.setLoading(true));
-    try {
-      const response = await fetch('/api/stories');
-      const data = await response.json();
-      dispatch(storyActions.setStories(data.stories));
-    } catch (error) {
-      dispatch(storyActions.setError(error.message));
-    }
-  };
-
-  // Generate new story
-  const generateStory = async (params) => {
-    dispatch(storyActions.setLoading(true));
-    try {
-      const response = await fetch('/api/stories/generate-complete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(params)
-      });
-      const data = await response.json();
-      dispatch(storyActions.addStory(data.story));
-    } catch (error) {
-      dispatch(storyActions.setError(error.message));
-    }
-  };
-
-  // Toggle favorite
-  const toggleFavorite = async (storyId) => {
-    try {
-      const response = await fetch(`/api/stories/${storyId}/favorite`, {
-        method: 'PATCH'
-      });
-      const data = await response.json();
-      dispatch(storyActions.toggleFavorite(storyId, data.isFavorite));
-    } catch (error) {
-      dispatch(storyActions.setError(error.message));
-    }
-  };
-
-  return (
-    <div>
-      {loading && <p>Loading...</p>}
-      {error && <p>Error: {error}</p>}
-      {stories.map(story => (
-        <div key={story._id}>
-          <h3>{story.title}</h3>
-          <button onClick={() => toggleFavorite(story._id)}>
-            {story.isFavorite ? '❤️' : '🤍'}
-          </button>
-        </div>
-      ))}
-    </div>
-  );
-};
-*/

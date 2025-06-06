@@ -13,11 +13,11 @@ import { useAuthContext } from "./hooks/Auth/useAuthContext";
 import Home from "./pages/Home/Home";
 import About from "./pages/About/About";
 import Contact from "./pages/Contact/Contact";
-import SignIn from "./pages/SignIn/SignIn";
-import SignUp from "./pages/SighUp/SignUp";
+import SignIn from "./pages/Auth/SignIn/SignIn";
+import SignUp from "./pages/Auth/SighUp/SignUp";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import MyStory from "./pages/MyStory/MyStory";
-import StoryCustomizationInterface from "./pages/StoryCustomizationInterface/StoryCustomizationInterface";
+import GenerateStory from "./pages/GenerateStory/GenerateStory";
 import Navbar from "./components/Navbar/Navbar";
 function App() {
   const { user } = useAuthContext();
@@ -33,7 +33,7 @@ function App() {
               path="/generatestory"
               element={
                 user ? (
-                  <StoryCustomizationInterface />
+                  <GenerateStory />
                 ) : (
                   <Navigate to="/login" />
                 )

@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./SignUp.css";
-import SignInImg from "../../assets/signin_image.png";
+import SignInImg from "../../../assets/signin_image.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 
-import { useSignUp } from "../../hooks/Auth/useSignUp";
+import { useSignUp } from "../../../hooks/Auth/useSignUp";
 
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);

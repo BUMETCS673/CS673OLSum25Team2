@@ -84,15 +84,5 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
-
-app.get("/", (req, res) => {
-  res.json({ message: "listening on http://localhost:" + port });
-});
-
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  next();
-});
-
 module.exports = app;
 

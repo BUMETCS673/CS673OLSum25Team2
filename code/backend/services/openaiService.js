@@ -39,9 +39,12 @@ Make it approximately 150-300 words, with simple language and a peaceful ending 
       max_tokens: 800,
       temperature: 0.7,
     });
-    console.log("OpenAI story generation response:", completion.choices[0].message.content);
+    console.log(
+      "OpenAI story generation response:",
+      completion.choices[0].message.content
+    );
     // Parse the JSON response
-    const parsedResponse = (completion.choices[0].message.content);
+    const parsedResponse = completion.choices[0].message.content;
     return parsedResponse;
   } catch (error) {
     console.error("OpenAI story generation error:", error);
@@ -54,7 +57,7 @@ const generateImageWithOpenAI = async (imageDescription) => {
   try {
     // Add emphasis on no text to the existing image description
     const enhancedPrompt = `${imageDescription} Pure visual illustration only - no text, no words, no letters, no titles, no captions, no speech bubbles, no written elements of any kind.`;
-    
+
     const result = await openai.images.generate({
       model: "dall-e-3",
       prompt: enhancedPrompt,
@@ -73,8 +76,84 @@ const generateImageWithOpenAI = async (imageDescription) => {
   }
 };
 
+// Generate audio using OpenAI's TTS model
+const generateAudioWithOpenAI = async ({
+  text,
+  voice,
+  model,
+  responseFormat,
+  speed,
+}) => {
+  try {
+    console.log(
+      `Generating audio with text: ${text}, voice: ${voice}, model: ${model}, format: ${responseFormat}`
+    );
+
+    function cleanTextForAudio(text) {
+      return (
+        text
+          // Remove or replace problematic punctuation
+          .replace(/'/g, "'") // Replace curly quotes with straight quotes
+          .replace(/"/g, '"') // Replace curly quotes with straight quotes
+          .replace(/['']/g, "'") // Normalize apostrophes
+          .replace(/[""]/g, '"') // Normalize quotation marks
+
+          // Add pauses for better speech flow
+          .replace(/\. /g, ". ") // Ensure space after periods
+          .replace(/\? /g, "? ") // Ensure space after question marks
+          .replace(/! /g, "! ") // Ensure space after exclamation marks
+
+          // Handle dialogue attribution for better flow
+          .replace(/, he said/g, " he said") // Remove comma before attribution
+          .replace(/, she said/g, " she said")
+          .replace(/, they said/g, " they said")
+
+          // Clean up extra whitespace
+          .replace(/\s+/g, " ") // Replace multiple spaces with single space
+          .trim()
+      ); // Remove leading/trailing whitespace
+    }
+
+    const response = await openai.audio.speech.create({
+      input: cleanTextForAudio(text),
+      voice: voice,
+      model: model,
+      response_format: responseFormat,
+      speed: speed,
+    });
+
+    // Get the audio as a buffer
+    const buffer = Buffer.from(await response.arrayBuffer());
+
+    return {
+      audioBuffer: buffer,
+      contentType: getContentType(responseFormat),
+      voice: voice,
+      model: model,
+      format: responseFormat,
+      textLength: text.length,
+      estimatedDuration: Math.ceil(text.split(" ").length / 150) * 60, // Rough estimate in seconds
+    };
+  } catch (error) {
+    console.error("OpenAI audio generation error:", error);
+    throw new Error(`Audio generation failed: ${error.message}`);
+  }
+};
+
+// Helper function to get content type based on format
+const getContentType = (format) => {
+  const contentTypes = {
+    mp3: "audio/mpeg",
+    opus: "audio/opus",
+    aac: "audio/aac",
+    flac: "audio/flac",
+    wav: "audio/wav",
+  };
+  return contentTypes[format] || "audio/mpeg";
+};
 
 module.exports = {
   generateStoryWithOpenAI,
   generateImageWithOpenAI,
+  generateAudioWithOpenAI,
 };
