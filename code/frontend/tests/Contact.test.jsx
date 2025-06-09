@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/vitest';
-import { describe, test, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import Contact from '../src/pages/Contact/Contact';
 
 // Mock the CSS import
@@ -10,7 +10,7 @@ vi.mock('./Contact.css', () => ({}));
 
 // Mock the image import
 vi.mock('../src/assets/signin_image.png', () => ({ 
-  default: 'mocked-contact-image.png' 
+  default: 'mocked-signin-image.png' 
 }));
 
 describe('Contact Component', () => {
@@ -52,7 +52,7 @@ describe('Contact Component', () => {
     it('renders contact image', () => {
       const contactImage = screen.getByRole('img', { name: /contact illustration/i });
       expect(contactImage).toBeInTheDocument();
-      expect(contactImage).toHaveAttribute('src', 'mocked-contact-image.png');
+      expect(contactImage).toHaveAttribute('src', 'mocked-signin-image.png');
       expect(contactImage).toHaveClass('contact-image');
     });
   });
