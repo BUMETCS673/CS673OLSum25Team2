@@ -57,6 +57,7 @@ app.get("/health", (req, res) => {
   });
 });
 
+
 // connect to mongodb
 mongoose
   .connect(process.env.MONGO_URI, {

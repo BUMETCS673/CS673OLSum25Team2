@@ -4,6 +4,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    env_file:
+      - ./frontend/.env
     container_name: my-magical-bedtime-frontend
     ports:
       - "5173:5173"
@@ -21,6 +23,8 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    env_file:
+      - ./backend/.env
     container_name: my-magical-bedtime-backend
     ports:
       - "5500:5500"

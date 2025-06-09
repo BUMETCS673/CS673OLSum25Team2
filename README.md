@@ -21,8 +21,9 @@ An AI-powered bedtime story generator designed specifically for preschool childr
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB
 - **AI Integration**: OpenAI GPT API
-- **Authentication**: JWT
-- **Hosting**: Netlify (Frontend)
+- **Authentication**: JWT, Google OAuth
+- **Hosting**: Netlify (Frontend), Heroku (Backend)
+
 
 ## 🚀 Getting Started
 
@@ -41,11 +42,23 @@ cd code
 
 2. **Set up environment variables**
 ```bash
-# Create .env file in project root
-MONGODB_URI=mongodb://mongo:27017/magical_bedtime
-JWT_SECRET=your_jwt_secret
-OPENAI_API_KEY=your_openai_api_key
+# code/frontend/.env
+VITE_GOOGLE_CLIENT_ID=your_google_client_id_here
+```
+
+```bash
+# code/backend/.env
+PORT=5500
 NODE_ENV=development
+MONGO_URI=your_mongodb_atlas_connection_string
+SECRET=your_jwt_secret_here
+OPENAI_API_KEY=your_openai_api_key_here
+FIREBASE_API_KEY=your_firebase_api_key
+FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
+FIREBASE_PROJECT_ID=your_firebase_project_id
+FIREBASE_STORAGE_BUCKET=your_project_id.firebasestorage.app
+FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+FIREBASE_APP_ID=your_firebase_app_id
 ```
 
 3. **Start the application with Docker**
@@ -60,7 +73,7 @@ docker-compose up -d
 4. **Access the application**
 - **Production**: https://velvety-entremet-8ac832.netlify.app/
 - **Local Frontend**: http://localhost:5173
-- **Local Backend API**: http://localhost:5000
+- **Local Backend API**: http://localhost:5500
 - **MongoDB**: localhost:27017
 
 ### 🐳 Docker Commands
@@ -87,24 +100,25 @@ docker-compose down --rmi all --volumes --remove-orphans
 ## 📁 Project Structure
 
 ```
-my-magical-bedtime/
+code/
 ├── frontend/
 │   ├── src/
-│   │   ├── components/          # Reusable UI components
+│   │   ├── components/         # Reusable UI components
 │   │   ├── context/            # React context providers
 │   │   ├── pages/              # Main application pages
 │   │   └── assets/             # Images, icons, and static files
 │   ├── public/                 # Public assets
+│   ├── .env                    # Frontend environment variables
 │   └── Dockerfile              # Frontend container config
 ├── backend/
 │   ├── controllers/            # Request handlers
 │   ├── models/                 # Database schemas
 │   ├── routes/                 # API route definitions
 │   ├── config/                 # Configuration files
+│   ├── .env                    # Backend environment variables
 │   └── Dockerfile              # Backend container config
 ├── docker-compose.yml          # Multi-container setup
-├── .env                        # Environment variables
-└── README.md                   # Project documentation
+└── README.md                   # Project documentation                   # Project documentation
 ```
 
 ## 🔌 API Endpoints
@@ -120,11 +134,6 @@ my-magical-bedtime/
 - `GET /api/stories/:id` - Get specific story
 - `DELETE /api/stories/:id` - Delete story
 
-### Children Profiles
-- `GET /api/children` - Get child profiles
-- `POST /api/children` - Create child profile
-- `PUT /api/children/:id` - Update child profile
-- `DELETE /api/children/:id` - Delete child profile
 
 ## 🎯 Target Audience
 

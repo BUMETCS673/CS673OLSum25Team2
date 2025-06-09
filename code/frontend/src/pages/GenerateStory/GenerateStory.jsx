@@ -4,7 +4,7 @@ import "./GenerateStory.css";
 import StoryRenderingView from "../../components/StoryRenderingView/StoryRenderingView";
 import { useGenerateStory } from "../../hooks/Story/useGenerateStory";
 import { useStoryContext } from "../../hooks/Story/useStoryContext";
-import StoryLoadingScreen from "./StoryLoadingScreen";
+import StoryLoadingScreen from "../../components/StoryLoadingScreen/StoryLoadingScreen";
 
 // Theme and setting options
 const themes = [
@@ -60,9 +60,8 @@ const GenerateStory = () => {
     isImageComplete,
     isLoadingAudio,
     isAudioComplete,
-    errorStory
+    errorStory,
   } = useGenerateStory();
-  const isLoadingAny = isLoadingStory || isLoadingImage || isLoadingAudio;
   const { generatedStory } = useStoryContext();
 
   // Trigger story generation view
@@ -95,8 +94,9 @@ const GenerateStory = () => {
           {themes.map((theme) => (
             <button
               key={theme}
-              className={`option-button ${selectedTheme === theme ? "selected" : ""
-                }`}
+              className={`option-button ${
+                selectedTheme === theme ? "selected" : ""
+              }`}
               onClick={() => setSelectedTheme(theme)}
             >
               {theme}
@@ -112,8 +112,9 @@ const GenerateStory = () => {
           {settings.map((setting) => (
             <button
               key={setting}
-              className={`option-button ${selectedSetting === setting ? "selected" : ""
-                }`}
+              className={`option-button ${
+                selectedSetting === setting ? "selected" : ""
+              }`}
               onClick={() => setSelectedSetting(setting)}
             >
               {setting}
@@ -129,15 +130,22 @@ const GenerateStory = () => {
   return (
     <div className="story-container">
       <div className="story-panel">
-        {storyGenerated && (isLoadingAny || !generatedStory) ? (
-          <StoryLoadingScreen onFinishLoading={() => {}} />
+      
+        {storyGenerated && (!generatedStory) ? (
+          <StoryLoadingScreen
+            isLoadingStory={isLoadingStory}
+            isStoryComplete={isStoryComplete}
+            isLoadingImage={isLoadingImage}
+            isImageComplete={isImageComplete}
+            isLoadingAudio={isLoadingAudio}
+            isAudioComplete={isAudioComplete}
+          />
         ) : storyGenerated ? (
           <StoryRenderingView
             onBackToSettings={() => setStoryGenerated(false)}
-            story={generatedStory}
+            generateStory={generatedStory}
           />
         ) : (
-
           <>
             <div className="panel-content">
               {/* Left MENU panel */}
