@@ -62,7 +62,7 @@
 .rendered-story-container button {
   padding: 12px 20px;
   background-color: transparent;
-  box-shadow: 10px 10px 15px -7px rgba(0,0,0,0.16);
+  box-shadow: 10px 10px 15px -7px rgba(0, 0, 0, 0.16);
   text-transform: uppercase;
   font-family: var(--main-font);
   color: var(--dark);
@@ -94,7 +94,14 @@
   border-radius: 8px;
   font-size: 14px;
   border: 1px solid var(--dark, #2c3e50);
-  font-family: var(--main-font, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif);
+  font-family: var(
+    --main-font,
+    "Segoe UI",
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif
+  );
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s;
@@ -111,8 +118,11 @@
 }
 
 .read-control-btn.playing {
-  background: var(--button-gradient, linear-gradient(135deg, #74b9ff 0%, #0984e3 100%));
-  color: var(--white, #ffffff);
+  background: var(
+    --button-gradient,
+    linear-gradient(135deg, #74b9ff 0%, #0984e3 100%)
+  );
+  color: var(--dark, #0c142c);
   font-weight: bold;
 }
 
@@ -141,8 +151,11 @@
 }
 
 .story-word.current-word {
-  background: var(--button-gradient, linear-gradient(135deg, #74b9ff 0%, #0984e3 100%));
-  color: var(--white, #ffffff);
+  background: var(
+    --button-gradient,
+    linear-gradient(135deg, #74b9ff 0%, #0984e3 100%)
+  );
+  color: var(--dark, #0c142c);
   font-weight: bold;
   box-shadow: 0 2px 8px rgba(116, 185, 255, 0.4);
   transform: scale(1.05);
@@ -171,21 +184,24 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+  .rendered-story-container {
+    padding: 24px;
+  }
   .read-aloud-controls {
     flex-direction: column;
     gap: 12px;
   }
-  
+
   .read-control-btn {
     width: 100%;
     max-width: 200px;
   }
-  
+
   .reading-progress {
     text-align: center;
     width: 100%;
   }
-  
+
   .story-text {
     font-size: 14px;
   }
@@ -206,10 +222,13 @@
 
 .story-word.current-word {
   animation: pulse-highlight 2s ease-in-out infinite;
-}/* OpenAI TTS specific styles */
+} /* OpenAI TTS specific styles */
 .generate-audio {
-  background: var(--button-gradient, linear-gradient(135deg, #74b9ff 0%, #0984e3 100%));
-  color: var(--white, #ffffff);
+  background: var(
+    --button-gradient,
+    linear-gradient(135deg, #74b9ff 0%, #0984e3 100%)
+  );
+  color: var(--dark, #0c142c);
   font-weight: bold;
 }
 
@@ -226,7 +245,10 @@
 }
 
 .download-btn:hover:not(:disabled) {
-  background: var(--button-gradient, linear-gradient(135deg, #74b9ff 0%, #0984e3 100%));
+  background: var(
+    --button-gradient,
+    linear-gradient(135deg, #74b9ff 0%, #0984e3 100%)
+  );
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(116, 185, 255, 0.3);
 }
@@ -256,7 +278,10 @@
 
 .progress-fill {
   height: 100%;
-  background: var(--button-gradient, linear-gradient(135deg, #74b9ff 0%, #0984e3 100%));
+  background: var(
+    --button-gradient,
+    linear-gradient(135deg, #74b9ff 0%, #0984e3 100%)
+  );
   transition: width 0.1s ease;
   border-radius: 3px;
 }
@@ -287,7 +312,14 @@
   border-radius: 8px;
   font-size: 14px;
   border: 1px solid var(--dark, #2c3e50);
-  font-family: var(--main-font, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif);
+  font-family: var(
+    --main-font,
+    "Segoe UI",
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif
+  );
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s;
@@ -304,11 +336,11 @@
   .reading-progress {
     min-width: 150px;
   }
-  
+
   .time-display {
     font-size: 11px;
   }
-  
+
   .progress-bar {
     height: 4px;
   }

@@ -6,7 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 200px 8px;
+  padding: 200px 8px 400px 8px;
 }
 
 .story-panel {
@@ -193,7 +193,13 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
-@media (max-width: 380px) {
+
+@media (max-width: 420px) {
+  .left-buttons button {
+    font-size: 16px;
+  }
+}
+@media (max-width: 390px) {
   .left-buttons button {
     font-size: 12px;
   }

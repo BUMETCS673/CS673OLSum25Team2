@@ -210,14 +210,16 @@
     flex-direction: column;
     overflow: hidden;
     height: auto;
+    padding-top: 100px;
     padding-bottom: 400px;
   }
 
   .signup-header {
     width: 100%;
-    background: var(--main-gradient);
+    background: transparent;
     text-align: center;
-    padding: 60px 12px;
+    margin: 0 auto;
+    padding: 60px 0;
   }
 
   .signup-h1 {
@@ -279,6 +281,9 @@
   .signup-image {
     top: 70%;
   }
+  .signup-header {
+    width: 90%;
+  }
   .signup-h1 {
     font-size: 40px;
   }
@@ -286,7 +291,7 @@
   .signup-box h2 {
     font-size: 28px;
   }
-.signup-box {
+  .signup-box {
     margin-right: 24px;
   }
 
@@ -316,6 +321,7 @@
   }
   .signup-image {
     top: 76%;
+    bottom: 0;
   }
   .signup-box {
     width: 100%;
@@ -325,6 +331,15 @@
   }
 }
 
+@media only screen and (max-width: 400px) {
+  .SignUp {
+    padding-bottom: 175px;
+  }
+  .signup-image {
+    top: 80%;
+    bottom: 0;
+  }
+}
 .error {
   margin: 10px 0;
 }

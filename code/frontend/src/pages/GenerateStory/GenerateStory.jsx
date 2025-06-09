@@ -4,6 +4,7 @@ import "./GenerateStory.css";
 import StoryRenderingView from "../../components/StoryRenderingView/StoryRenderingView";
 import { useGenerateStory } from "../../hooks/Story/useGenerateStory";
 import { useStoryContext } from "../../hooks/Story/useStoryContext";
+import StoryLoadingScreen from "./StoryLoadingScreen";
 
 // Theme and setting options
 const themes = [
@@ -61,6 +62,7 @@ const GenerateStory = () => {
     isAudioComplete,
     errorStory
   } = useGenerateStory();
+  const isLoadingAny = isLoadingStory || isLoadingImage || isLoadingAudio;
   const { generatedStory } = useStoryContext();
 
   // Trigger story generation view
@@ -93,9 +95,8 @@ const GenerateStory = () => {
           {themes.map((theme) => (
             <button
               key={theme}
-              className={`option-button ${
-                selectedTheme === theme ? "selected" : ""
-              }`}
+              className={`option-button ${selectedTheme === theme ? "selected" : ""
+                }`}
               onClick={() => setSelectedTheme(theme)}
             >
               {theme}
@@ -111,9 +112,8 @@ const GenerateStory = () => {
           {settings.map((setting) => (
             <button
               key={setting}
-              className={`option-button ${
-                selectedSetting === setting ? "selected" : ""
-              }`}
+              className={`option-button ${selectedSetting === setting ? "selected" : ""
+                }`}
               onClick={() => setSelectedSetting(setting)}
             >
               {setting}
@@ -129,23 +129,15 @@ const GenerateStory = () => {
   return (
     <div className="story-container">
       <div className="story-panel">
-        {storyGenerated ? (
-          isLoadingStory ? (
-
-            // TODO : Add loading animation
-            <>
-              <div className="loading">Loading...</div>
-              isLoadingStory: {isLoadingStory ? "true" : "false"} -- isStoryComplete: {isStoryComplete ? "true" : "false"}<br />
-              isLoadingImage: {isLoadingImage ? "true" : "false"} -- isImageComplete: {isImageComplete ? "true" : "false"} <br />
-              isLoadingAudio: {isLoadingAudio ? "true" : "false"} -- isAudioComplete: {isAudioComplete ? "true" : "false"}
-            </>
-          ) : (
-            <StoryRenderingView
-              onBackToSettings={() => setStoryGenerated(false)}
-              generateStory={generatedStory}
-            />
-          )
+        {storyGenerated && (isLoadingAny || !generatedStory) ? (
+          <StoryLoadingScreen onFinishLoading={() => {}} />
+        ) : storyGenerated ? (
+          <StoryRenderingView
+            onBackToSettings={() => setStoryGenerated(false)}
+            story={generatedStory}
+          />
         ) : (
+
           <>
             <div className="panel-content">
               {/* Left MENU panel */}

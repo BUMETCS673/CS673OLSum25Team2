@@ -29,13 +29,10 @@
   width: 100%;
 }
 
-.navbar-logo {
-  font-family: var(--accent-font);
-  font-size: 32px;
-  color: var(--accent);
-  text-decoration: none;
-  transition: transform 0.3s ease;
+.navbar-logo img {
+  max-width: 160px;
   cursor: pointer;
+  transition: all ease-in-out 0.5ms;
 }
 
 .navbar-logo:hover {
@@ -50,7 +47,9 @@
 }
 
 .navbar-menu.active {
+  margin-top: -16px;
   right: 0;
+  z-index: 4000;
 }
 
 .navbar-link {
@@ -72,6 +71,7 @@
   height: 2px;
   background: var(--accent);
   transition: width 0.3s ease;
+  z-index: 4000;
 }
 
 .navbar-link:hover {
@@ -144,7 +144,7 @@
     margin-left: 390px;
   }
 }
-@media (max-width: 1229px)  {
+@media (max-width: 1229px) {
   .navbar-cta-signin {
     margin-left: 120px;
   }
