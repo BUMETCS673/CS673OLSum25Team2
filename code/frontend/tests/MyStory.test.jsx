@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import StoryListPage from '../src/pages/MyStory/MyStory';
@@ -35,7 +35,7 @@ const mockStories = [
     imageDownloadUrl: 'https://example.com/image1.jpg',
     audioBuffer: new ArrayBuffer(8),
     metadata: {
-      character: 'Benny the Rabbit',
+      character: 'Rabbit',
       setting: 'Magic Forest',
       theme: 'Adventure'
     }
@@ -43,12 +43,12 @@ const mockStories = [
   {
     id: '2',
     title: 'Princess Luna and the Star Castle',
-    content: 'High above the clouds, Princess Luna lived in a castle made of stars. Every night, she would dance with the moonbeams and sing lullabies to sleeping children.',
+    content: 'High above the clouds, the cat Princess Luna lived in a castle made of stars. Every night, she would dance with the moonbeams and sing lullabies to sleeping children.',
     createdAt: '2024-01-10T14:20:00Z',
     imageDownloadUrl: null,
     audioBuffer: null,
     metadata: {
-      character: 'Princess Luna',
+      character: 'Cat',
       setting: 'Star Castle',
       theme: 'Magic'
     }
@@ -61,7 +61,7 @@ const mockStories = [
     imageDownloadUrl: 'https://example.com/image3.jpg',
     audioBuffer: new ArrayBuffer(8),
     metadata: {
-      character: 'Friendly Dragon',
+      character: 'Dragon',
       setting: 'Village',
       theme: 'Friendship'
     }
