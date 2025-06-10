@@ -14,7 +14,7 @@ import Home from "./pages/Home/Home";
 import About from "./pages/About/About";
 import Contact from "./pages/Contact/Contact";
 import SignIn from "./pages/Auth/SignIn/SignIn";
-import SignUp from "./pages/Auth/SighUp/SignUp";
+import SignUp from "./pages/Auth/SignUp/SignUp";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import MyStory from "./pages/MyStory/MyStory";
 import GenerateStory from "./pages/GenerateStory/GenerateStory";

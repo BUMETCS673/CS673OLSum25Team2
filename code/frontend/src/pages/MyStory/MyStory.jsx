@@ -74,6 +74,7 @@ const StoryListPage = ({
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="search-input"
+              aria-label="Search stories"
             />
           </div>
         </div>
