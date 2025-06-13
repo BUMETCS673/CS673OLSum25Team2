@@ -2,29 +2,27 @@ FROM node:23-alpine
 
 WORKDIR /app
 
-# Install core dependencies for Alpine
+# Add essential Alpine tools for builds and debugging
 RUN apk add --no-cache bash git
 
-# Copy package.json and package-lock.json first (to optimize Docker caching)
-COPY package*.json ./
+# Copy both dependency files first (preserve cache layer)
+COPY package.json package-lock.json ./
 
-# Install all dependencies **including devDependencies**
+# Ensure dev dependencies (like Jest) are installed
 RUN npm install --include=dev
 
-# Install nodemon globally for development
+# Install nodemon globally for development use
 RUN npm install -g nodemon
 
-# Copy the rest of the application code
+# Copy in the rest of the application source
 COPY . .
 
-# Ensure Jest is installed properly for test containers
-RUN npm list jest || npm install --save-dev jest
+# Sanity check: confirm Jest is present
+RUN npx jest --version || echo "❌ Jest still not installed"
 
-# Ensure coverage folder exists
+# Set coverage directory permissions just in case
 RUN mkdir -p coverage && chmod -R 777 coverage
 
-# Expose the port for API usage
 EXPOSE 5500
 
-# Default command for normal backend operations
 CMD ["npm", "run", "dev"]
