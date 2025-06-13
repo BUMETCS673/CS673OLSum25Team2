@@ -48,6 +48,9 @@ jobs:
         working-directory: ./code
         run: docker compose --profile test up -d --build
 
+      - name: Wait for backend-test container to finish
+        run: docker wait my-magical-bedtime-backend-test || true
+
       - name: Backend Test Logs
         working-directory: ./code
         run: docker logs my-magical-bedtime-backend-test
@@ -55,9 +58,12 @@ jobs:
       - name: Frontend Test Logs
         working-directory: ./code
         run: docker logs my-magical-bedtime-frontend-test
+
       - name: Copy coverage report from container
+        working-directory: ./code
         run: |
-        docker cp my-magical-bedtime-backend-test:/app/coverage/cobertura-coverage.xml ./code/backend/coverage/cobertura-coverage.xml
+          mkdir -p ./backend/coverage
+          docker cp my-magical-bedtime-backend-test:/app/coverage/cobertura-coverage.xml ./backend/coverage/cobertura-coverage.xml
 
       - name: Stop Test Containers
         working-directory: ./code
