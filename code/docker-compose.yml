@@ -38,19 +38,19 @@ services:
     tty: true
 
   backend-test:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: my-magical-bedtime-backend-test
-    volumes:
-      - ./backend:/app
-      - ./backend/coverage:/app/coverage
-    environment:
-      - NODE_ENV=test
-      - OPENAI_API_KEY=dummy-key-for-testing
-    command: ["/bin/sh", "-c", "mkdir -p /app/coverage && chmod -R 777 /app/coverage && npm run test:coverage"]
-    profiles:
-      - test
+  build:
+    context: ./backend
+    dockerfile: Dockerfile
+  container_name: my-magical-bedtime-backend-test
+  volumes:
+    - ./backend:/app
+    - ./backend/coverage:/app/coverage
+  environment:
+    - NODE_ENV=test
+    - OPENAI_API_KEY=dummy-key-for-testing
+  command: ["/bin/sh", "-c", "npm install --include=dev && npm run test:coverage"]
+  profiles:
+    - test
 
   frontend-test:
     build:
