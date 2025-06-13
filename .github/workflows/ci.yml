@@ -1,4 +1,4 @@
-name: CI/CD - Build, Test, Security, and Deploy MERN Stack
+name: CI/CD - Docker Test, Lint, Audit, and Deploy MERN
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-lint-test-security:
-    name: Lint, Test (Docker), Security Scan, and Upload Coverage
+    name: Lint, Test (Docker), Security Audit, and Coverage
     runs-on: ubuntu-latest
 
     steps:
@@ -19,7 +19,14 @@ jobs:
         with:
           node-version: 21
 
-      # Validate Docker Compose
+      # Copy root .env into backend and frontend
+      - name: Distribute .env
+        working-directory: ./code
+        run: |
+          cp .env backend/.env
+          cp .env frontend/.env
+
+      # Validate Docker Compose (using docker compose)
       - name: Validate Docker Compose
         working-directory: ./code
         run: docker compose config
@@ -29,22 +36,22 @@ jobs:
         working-directory: ./code
         run: docker compose --profile test up -d --build
 
-      # Run Backend Tests in Docker
-      - name: Run Backend Tests in Container
+      # Output backend test results
+      - name: Backend Test Logs
         working-directory: ./code
         run: docker logs my-magical-bedtime-backend-test
 
-      # Run Frontend Tests in Docker
-      - name: Run Frontend Tests in Container
+      # Output frontend test results
+      - name: Frontend Test Logs
         working-directory: ./code
         run: docker logs my-magical-bedtime-frontend-test
 
-      # Stop test containers
+      # Stop containers
       - name: Stop Test Containers
         working-directory: ./code
-        run: docker-compose --profile test down
+        run: docker compose --profile test down
 
-      # Upload coverage using Cobertura (no external setup)
+      # Upload coverage via Cobertura (adjust path as needed)
       - name: Upload code coverage
         uses: 5monkeys/cobertura-action@master
         with:
@@ -52,21 +59,21 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           minimum_coverage: 75
 
-      # Security Audit using npm
-      - name: Run Security Audit
+      # npm audit for security checks
+      - name: Run npm audit (backend)
         working-directory: ./code/backend
         run: npm audit --audit-level=high
 
-      - name: Run Security Audit
+      - name: Run npm audit (frontend)
         working-directory: ./code/frontend
         run: npm audit --audit-level=high
 
-      # Static Analysis with CodeQL
+      # CodeQL Static Analysis
       - name: Static Analysis (CodeQL)
         uses: github/codeql-action/analyze@v2
 
-      # Run Trivy security scan on Docker image
-      - name: Run Trivy Security Scan
+      # Optional: Trivy for Docker vulnerability scan
+      - name: Docker Image Security Scan
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'node:latest'
@@ -91,7 +98,5 @@ jobs:
           git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/mymagicalbedtime.git
           git subtree push --prefix code/backend heroku main
 
-      - name: Verify Backend Deployment
-        run: |
-          echo "✅ Backend deployment completed successfully!"
-          echo "🌐 Backend API URL: https://mymagicalbedtime-25abceb2c11f.herokuapp.com/"
+      - name: Confirm Deployment
+        run: echo "✅ Deployed at: https://mymagicalbedtime-25abceb2c11f.herokuapp.com/"
