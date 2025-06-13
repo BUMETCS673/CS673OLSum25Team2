@@ -19,39 +19,32 @@ jobs:
         with:
           node-version: 21
 
-      # Copy root .env into backend and frontend
-      - name: Distribute .env
+      - name: Distribute .env to frontend/backend
         working-directory: ./code
         run: |
           cp .env backend/.env
           cp .env frontend/.env
 
-      # Validate Docker Compose (using docker compose)
       - name: Validate Docker Compose
         working-directory: ./code
         run: docker compose config
 
-      # Start test containers
       - name: Start Test Containers
         working-directory: ./code
         run: docker compose --profile test up -d --build
 
-      # Output backend test results
       - name: Backend Test Logs
         working-directory: ./code
         run: docker logs my-magical-bedtime-backend-test
 
-      # Output frontend test results
       - name: Frontend Test Logs
         working-directory: ./code
         run: docker logs my-magical-bedtime-frontend-test
 
-      # Stop containers
       - name: Stop Test Containers
         working-directory: ./code
         run: docker compose --profile test down
 
-      # Upload coverage via Cobertura (adjust path as needed)
       - name: Upload code coverage
         uses: 5monkeys/cobertura-action@master
         with:
@@ -59,7 +52,6 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           minimum_coverage: 75
 
-      # npm audit for security checks
       - name: Run npm audit (backend)
         working-directory: ./code/backend
         run: npm audit --audit-level=high
@@ -68,11 +60,14 @@ jobs:
         working-directory: ./code/frontend
         run: npm audit --audit-level=high
 
-      # CodeQL Static Analysis
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript
+
       - name: Static Analysis (CodeQL)
         uses: github/codeql-action/analyze@v2
 
-      # Optional: Trivy for Docker vulnerability scan
       - name: Docker Image Security Scan
         uses: aquasecurity/trivy-action@master
         with:
