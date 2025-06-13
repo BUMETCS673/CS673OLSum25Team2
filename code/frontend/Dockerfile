@@ -2,6 +2,8 @@ FROM node:23-alpine
 
 WORKDIR /app
 
+ENV PATH="/app/node_modules/.bin:$PATH"
+
 # Copy package.json and package-lock.json
 COPY package*.json ./
 

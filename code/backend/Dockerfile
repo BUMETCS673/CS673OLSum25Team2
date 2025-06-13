@@ -2,6 +2,8 @@ FROM node:23-alpine
 
 WORKDIR /app
 
+ENV PATH="/app/node_modules/.bin:$PATH"
+
 # Add essential Alpine tools for builds and debugging
 RUN apk add --no-cache bash git
 
