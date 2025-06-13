@@ -9,7 +9,7 @@
     "test:controller": "NODE_ENV=test jest __tests__/controllers/storyController.test.js",
     "test:validation": "NODE_ENV=test jest __tests__/controllers/storyValidation.test.js",
     "test:all": "NODE_ENV=test jest",
-    "test:coverage": "NODE_ENV=test jest --coverage --coverageReporters=cobertura --testPath --testPathPattern=controllers"
+    "test:coverage": "NODE_ENV=test jest --coverage --coverageReporters=cobertura --testPathPattern=controllers"
   },
   "keywords": [],
   "author": "",
