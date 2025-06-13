@@ -50,7 +50,7 @@ services:
     environment:
       - NODE_ENV=test
       - OPENAI_API_KEY=dummy-key-for-testing
-    command: npm test
+    command: npm run test:coverage
     profiles:
       - test
 
