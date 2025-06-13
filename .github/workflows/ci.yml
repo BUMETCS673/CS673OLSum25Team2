@@ -60,9 +60,8 @@ jobs:
         working-directory: ./code
         run: docker compose --profile test down
 
-      - name: Verify Coverage Exists
-        working-directory: ./code/backend
-        run: ls -lh coverage || echo "❌ No coverage directory found"
+      - name: Verify coverage file
+        run: test -f ./code/backend/coverage/cobertura-coverage.xml && echo "✅ Found coverage file"
 
       - name: Upload code coverage
         uses: 5monkeys/cobertura-action@master
