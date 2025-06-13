@@ -94,4 +94,5 @@ jobs:
           git subtree push --prefix code/backend heroku main
 
       - name: Confirm Deployment
-        run: echo "✅ Deployed at: https://mymagicalbedtime-25abceb2c11f.herokuapp.com/"
+        run: |
+          echo "✅ Deployed at: https://mymagicalbedtime-25abceb2c11f.herokuapp.com/"
