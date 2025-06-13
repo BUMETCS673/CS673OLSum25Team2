@@ -52,10 +52,16 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           minimum_coverage: 75
 
-      # Security Scans
-      - name: Security Scan (Dependabot)
-        uses: actions/dependabot-action@v2
+      # Security Audit using npm
+      - name: Run Security Audit
+        working-directory: ./code/backend
+        run: npm audit --audit-level=high
 
+      - name: Run Security Audit
+        working-directory: ./code/frontend
+        run: npm audit --audit-level=high
+
+      # Static Analysis with CodeQL
       - name: Static Analysis (CodeQL)
         uses: github/codeql-action/analyze@v2
 
