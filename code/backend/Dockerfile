@@ -5,11 +5,11 @@ WORKDIR /app
 # Install core dependencies for Alpine
 RUN apk add --no-cache bash git
 
-# Copy package.json and package-lock.json first (best for caching layers)
+# Copy package.json and package-lock.json first
 COPY package*.json ./
 
 # Install dependencies, including Jest
-RUN npm install
+RUN npm install --save-dev jest
 
 # Install nodemon globally for development
 RUN npm install -g nodemon
@@ -17,8 +17,8 @@ RUN npm install -g nodemon
 # Copy the rest of the application code
 COPY . .
 
-# Ensure Jest is installed in the container
-RUN npm install --save-dev jest
+# Ensure coverage folder exists
+RUN mkdir -p coverage && chmod -R 777 coverage
 
 # Expose the port the API will run on
 EXPOSE 5500
