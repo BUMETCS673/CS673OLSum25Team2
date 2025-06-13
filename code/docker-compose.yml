@@ -38,7 +38,6 @@ services:
     stdin_open: true
     tty: true
 
-  # Backend Testing
   backend-test:
     build:
       context: ./backend
@@ -46,15 +45,14 @@ services:
     container_name: my-magical-bedtime-backend-test
     volumes:
       - ./backend:/app
-      - /app/node_modules
+      - ./backend/coverage:/app/coverage
     environment:
       - NODE_ENV=test
       - OPENAI_API_KEY=dummy-key-for-testing
-    command: npm run test:coverage
+    command: bash -c "mkdir -p /app/coverage && chmod -R 777 /app/coverage && npm run test:coverage"
     profiles:
       - test
 
-  # Frontend Testing
   frontend-test:
     build:
       context: ./frontend

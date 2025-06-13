@@ -22,6 +22,7 @@ jobs:
       - name: Write .env files for backend and frontend
         working-directory: ./code
         run: |
+          # Backend .env
           cat <<EOF > backend/.env
           PORT=5500
           NODE_ENV=development
@@ -36,6 +37,7 @@ jobs:
           FIREBASE_APP_ID=your_firebase_app_id
           EOF
 
+          # Frontend .env
           echo "VITE_GOOGLE_CLIENT_ID=your_google_client_id_here" > frontend/.env
 
       - name: Validate Docker Compose
@@ -57,6 +59,10 @@ jobs:
       - name: Stop Test Containers
         working-directory: ./code
         run: docker compose --profile test down
+
+      - name: Verify Coverage Exists
+        working-directory: ./code/backend
+        run: ls -lh coverage || echo "❌ No coverage directory found"
 
       - name: Upload code coverage
         uses: 5monkeys/cobertura-action@master
