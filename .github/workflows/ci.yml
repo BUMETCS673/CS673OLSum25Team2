@@ -55,6 +55,9 @@ jobs:
       - name: Frontend Test Logs
         working-directory: ./code
         run: docker logs my-magical-bedtime-frontend-test
+      - name: Copy coverage report from container
+        run: |
+        docker cp my-magical-bedtime-backend-test:/app/coverage/cobertura-coverage.xml ./code/backend/coverage/cobertura-coverage.xml
 
       - name: Stop Test Containers
         working-directory: ./code
