@@ -1,3 +1,5 @@
+RUN npm install --save-dev jest
+
 FROM node:23-alpine
 
 WORKDIR /app
