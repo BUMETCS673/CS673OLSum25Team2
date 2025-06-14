@@ -59,11 +59,17 @@ jobs:
         working-directory: ./code
         run: docker logs my-magical-bedtime-frontend-test
 
+      - name: Fix permissions before copying coverage
+        working-directory: ./code
+        run: |
+          sudo chmod -R 777 ./backend/coverage || true
+          sudo chown -R runner:runner ./backend/coverage || true
+
       - name: Copy coverage report from container
         working-directory: ./code
         run: |
           mkdir -p ./backend/coverage
-          rm -f ./backend/coverage/tmp-cobertura.xml || true
+          sudo rm -f ./backend/coverage/tmp-cobertura.xml || true
           docker cp my-magical-bedtime-backend-test:/app/coverage/cobertura-coverage.xml ./backend/coverage/tmp-cobertura.xml
           mv -f ./backend/coverage/tmp-cobertura.xml ./backend/coverage/cobertura-coverage.xml
 
