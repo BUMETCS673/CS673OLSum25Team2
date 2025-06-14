@@ -63,7 +63,9 @@ jobs:
         working-directory: ./code
         run: |
           mkdir -p ./backend/coverage
-          docker cp my-magical-bedtime-backend-test:/app/coverage/cobertura-coverage.xml ./backend/coverage/cobertura-coverage.xml
+          rm -f ./backend/coverage/tmp-cobertura.xml || true
+          docker cp my-magical-bedtime-backend-test:/app/coverage/cobertura-coverage.xml ./backend/coverage/tmp-cobertura.xml
+          mv -f ./backend/coverage/tmp-cobertura.xml ./backend/coverage/cobertura-coverage.xml
 
       - name: Stop Test Containers
         working-directory: ./code
