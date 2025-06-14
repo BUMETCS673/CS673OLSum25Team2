@@ -1,4 +1,4 @@
-name: CI/CD - Docker Test, Lint, Audit, and Deploy MERN
+name: CI/CD - Docker Test, Audit, and Deploy MERN
 
 on:
   push:
@@ -6,8 +6,8 @@ on:
   pull_request:
 
 jobs:
-  build-lint-test-security:
-    name: Lint, Test (Docker), Security Audit, and Coverage
+  build-test-security:
+    name: Test (Docker), Security Audit, and Coverage
     runs-on: ubuntu-latest
 
     steps:
@@ -18,6 +18,24 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 21
+
+      # ✅ Cache dependencies for backend
+      - name: Cache Backend Dependencies
+        uses: actions/cache@v3
+        with:
+          path: code/backend/node_modules
+          key: ${{ runner.os }}-backend-${{ hashFiles('code/backend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-backend-
+
+      # ✅ Cache dependencies for frontend
+      - name: Cache Frontend Dependencies
+        uses: actions/cache@v3
+        with:
+          path: code/frontend/node_modules
+          key: ${{ runner.os }}-frontend-${{ hashFiles('code/frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-frontend-
 
       - name: Write .env files for backend and frontend
         working-directory: ./code
@@ -112,7 +130,7 @@ jobs:
   deploy-backend:
     name: Deploy Backend to Heroku
     runs-on: ubuntu-latest
-    needs: [build-lint-test-security]
+    needs: [build-test-security]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
