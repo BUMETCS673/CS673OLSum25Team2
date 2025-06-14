@@ -19,9 +19,6 @@ RUN npm install -g nodemon
 # Copy in the rest of the application source
 COPY . .
 
-# Sanity check: confirm Jest is present
-RUN npx jest --version || echo "❌ Jest still not installed"
-
 # Set coverage directory permissions just in case
 RUN mkdir -p coverage && chmod -R 777 coverage
 
