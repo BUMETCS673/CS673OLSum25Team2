@@ -637,7 +637,7 @@ const MyStory = () => {
                   </div>
 
                   {story.summary && (
-                    <p className="story-preview">
+                    <p className="story-preview" title={story.summary}>
                       {truncateText(story.summary)}
                     </p>
                   )}

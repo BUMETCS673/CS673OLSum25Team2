@@ -94,22 +94,23 @@ const generateImageWithOpenAI = async (imageDescription, userId) => {
     // const newQuality = controls.imageConfig.model === 'gpt-image-1' ? 'auto' : 'standard';
     // const newQuality = newModel === 'gpt-image-1' ? 'auto' : 'standard';
 
+    let result;
     if (newModel === "dall-e-3") {
-      const result = await openai.images.generate({
+        result = await openai.images.generate({
         model: "dall-e-3",
         prompt: enhancedPrompt,
         size: "1024x1024",
         quality: "standard",
         n: 1,
       });
+    }else {
+        result = await openai.images.generate({
+        model: "dall-e-2",
+        prompt: enhancedPrompt,
+        size: "1024x1024",
+        n: 1,
+      });
     }
-
-    const result = await openai.images.generate({
-      model: "dall-e-2",
-      prompt: enhancedPrompt,
-      size: "1024x1024",
-      n: 1,
-    });
 
     return {
       imageUrl: result.data[0].url,

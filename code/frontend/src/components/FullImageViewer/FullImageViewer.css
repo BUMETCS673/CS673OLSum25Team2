@@ -305,7 +305,7 @@
   }
   
   .full-image-controls {
-    align-self: flex-end;
+    align-self: flex-start;
     gap: 6px;
     padding: 6px 10px;
   }
@@ -319,6 +319,8 @@
     width: 40px;
     height: 40px;
     margin-left: 12px;
+    position: absolute;
+    right: 20px;
   }
   
   .full-image-footer {
