@@ -8,9 +8,9 @@
 }
 
 .login-required-content_loading {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--dark);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #fab47e82;
   border-radius: var(--radius-lg);
   padding: 3rem;
   text-align: center;
@@ -24,9 +24,9 @@
 }
 
 .login-required-content {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--dark);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #fab47e82;
   border-radius: var(--radius-lg);
   padding: 3rem;
   text-align: center;
@@ -96,14 +96,13 @@
 
 .btn-secondary {
   background: transparent;
-  color: var(--white);
-  border: 2px solid var(--white);
+  color: var(--accent);
+  border: 1px solid var(--accent);
 }
 
 .btn-secondary:hover {
-  background: var(--white);
-  color: var(--dark);
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(250, 180, 126, 0.4);
 }
 
 .login-required-footer {
@@ -113,7 +112,7 @@
 }
 
 .home-link {
-  color: rgba(240, 246, 255, 0.7);
+  color: var(--white);
   text-decoration: none;
   font-size: 0.9rem;
   transition: color 0.3s ease;
@@ -128,6 +127,8 @@
   .login-required-container {
     padding: 1rem;
     min-height: 70vh;
+    margin-top: 120px;
+    margin-bottom: 200px;
   }
 
   .login-required-content {

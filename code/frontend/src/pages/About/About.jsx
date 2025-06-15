@@ -38,7 +38,7 @@ const About = () => {
       </div>
 
       <div className="about-container">
-        <h2>Meet the Team</h2>
+        <h3>Meet the Team</h3>
         <p><strong>Hongjie Zhang</strong> — Design & Implementation Lead, Security Lead</p>
         <p><strong>Tetiana Korchynska</strong> — Requirement Lead, Design & Implementation Lead</p>
         <p><strong>Iqra Chaudhary</strong> — Team Lead</p>
