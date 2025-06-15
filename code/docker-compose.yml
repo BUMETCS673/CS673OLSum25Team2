@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   frontend:
     build:
@@ -38,7 +37,6 @@ services:
     stdin_open: true
     tty: true
 
-  # Backend Testing
   backend-test:
     build:
       context: ./backend
@@ -46,15 +44,14 @@ services:
     container_name: my-magical-bedtime-backend-test
     volumes:
       - ./backend:/app
-      - /app/node_modules
+      - ./backend/coverage:/app/coverage
     environment:
       - NODE_ENV=test
       - OPENAI_API_KEY=dummy-key-for-testing
-    command: npm test
+    command: ["/bin/sh", "-c", "export PATH=$PATH:/app/node_modules/.bin && npm install --include=dev && npm install -g jest && jest --coverage --coverageReporters=cobertura --testPathPattern=controllers && ls -lh coverage/"]
     profiles:
       - test
 
-  # Frontend Testing
   frontend-test:
     build:
       context: ./frontend
@@ -68,3 +65,7 @@ services:
     command: npm test
     profiles:
       - test
+
+networks:
+  default:
+    name: code_default
