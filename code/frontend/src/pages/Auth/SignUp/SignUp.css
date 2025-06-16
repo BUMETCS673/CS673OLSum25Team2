@@ -3,7 +3,6 @@
   height: 100vh;
   position: relative;
   overflow: hidden;
-  z-index: 1;
 }
 
 /* LEFT SIDE */
@@ -213,6 +212,7 @@
     height: auto;
     padding-top: 100px;
     padding-bottom: 400px;
+    z-index: 1;
   }
 
   .signup-header {

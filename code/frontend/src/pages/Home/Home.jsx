@@ -8,12 +8,6 @@ const Home = () => {
 
   return (
     <section className="Home">
-      {/* <Navbar /> */}
-       {/* <nav className="main-container">
-        <button className="home-signin-btn" onClick={() => navigate("/login")}>
-          SIGN IN
-        </button>
-      </nav> */}
       <div className="main-container home-screen-container">
         <img src={MainImage} alt="Main" className="main-image" />
         <div className="home-text-overlay">

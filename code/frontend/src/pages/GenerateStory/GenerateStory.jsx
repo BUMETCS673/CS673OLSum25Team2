@@ -5,25 +5,8 @@ import StoryRenderingView from "../../components/StoryRenderingView/StoryRenderi
 import { useGenerateStory } from "../../hooks/Story/useGenerateStory";
 import { useStoryContext } from "../../hooks/Story/useStoryContext";
 import StoryLoadingScreen from "../../components/StoryLoadingScreen/StoryLoadingScreen";
-
-// Theme and setting options
-const themes = [
-  "Friendship",
-  "Adventure",
-  "Kindness",
-  "Animals",
-  "Magic",
-  "Helping Others",
-  "Bravery",
-  "Imagination",
-  "Bedtime",
-  "Learning",
-  "Sharing",
-  "Curiosity",
-  "Nature",
-  "Superheroes",
-  "Creativity",
-];
+import { useGetSetting } from "../../hooks/Settings/useGetSetting";
+import {LoadingSpinner,} from "../../components/LoadingError/LoadingError";
 
 const settings = [
   "Forest",
@@ -50,9 +33,12 @@ const GenerateStory = () => {
   const [selectedTheme, setSelectedTheme] = useState(null);
   const [selectedSetting, setSelectedSetting] = useState(null);
   const [storyGenerated, setStoryGenerated] = useState(false);
+  const { setting } = useGetSetting();
+
   // Check if all options are selected before enabling the GENERATE A STORY button
   const isReady = selectedCharacter && selectedTheme && selectedSetting;
   const {
+    resetGenerateStory,
     generateStory,
     isLoadingStory,
     isStoryComplete,
@@ -67,6 +53,7 @@ const GenerateStory = () => {
   // Trigger story generation view
   const generateStoryHandler = async () => {
     console.log(selectedCharacter, selectedTheme, selectedSetting);
+    resetGenerateStory();
     setStoryGenerated(true);
     await generateStory({ selectedCharacter, selectedTheme, selectedSetting });
 
@@ -77,7 +64,7 @@ const GenerateStory = () => {
   };
 
   // Renders content in the right panel based on current active menu
-  // (charater, there, or setting selection)
+  // ( character, there, or setting selection)
   const renderRightPanel = () => {
     if (activeMenu === "character") {
       return (
@@ -91,7 +78,7 @@ const GenerateStory = () => {
     if (activeMenu === "theme") {
       return (
         <div className="option-grid">
-          {themes.map((theme) => (
+          {setting.response.storyConfig.allowedThemes.map((theme) => (
             <button
               key={theme}
               className={`option-button ${
@@ -126,12 +113,16 @@ const GenerateStory = () => {
 
     return null;
   };
+  console.log(setting);
+  // Show loading state
+    if (!setting ) {
+      return <LoadingSpinner message="Loading Story Generator" />;
+    }
 
   return (
     <div className="story-container">
       <div className="story-panel">
-      
-        {storyGenerated && (!generatedStory) ? (
+        {storyGenerated && !generatedStory ? (
           <StoryLoadingScreen
             isLoadingStory={isLoadingStory}
             isStoryComplete={isStoryComplete}

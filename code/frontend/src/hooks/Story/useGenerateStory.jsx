@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useStoryContext } from "../../hooks/Story/useStoryContext";
-// import { useAuthContext } from "../../hooks/Auth/AuthContext";
 import { useAuthContext } from "../../hooks/Auth/useAuthContext";
 
 export const useGenerateStory = () => {
@@ -58,11 +57,10 @@ export const useGenerateStory = () => {
           hasStoryId: !!json?.storyId,
           json: json,
         });
-        setIsLoadingStory(false);
         setErrorStory("Invalid response from server");
         return;
       }
-
+      setIsStoryComplete(true);
       console.log("Generated Story:", json);
 
       // Execute generateImage and generateAudio concurrently
@@ -119,7 +117,7 @@ export const useGenerateStory = () => {
       });
 
       setIsLoadingStory(false);
-      setIsStoryComplete(true);
+     
     } catch (error) {
       console.error("Error in generateStory:", error);
       setIsLoadingStory(false);
@@ -198,7 +196,12 @@ export const useGenerateStory = () => {
     }
   };
 
+  const resetGenerateStory = () => {
+    dispatch({ type: "RESET_GENERATE_STORY" });
+  };
+
   return {
+    resetGenerateStory,
     generateStory,
     isLoadingStory,
     isStoryComplete,

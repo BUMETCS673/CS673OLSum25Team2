@@ -1,6 +1,8 @@
 module.exports = {
   testEnvironment: 'node',
   coverageDirectory: 'coverage',
+  collectCoverage: true,
+  coverageReporters: ['cobertura', 'text-summary'],
   collectCoverageFrom: [
     'controllers/**/*.js',
     'models/**/*.js',
@@ -8,7 +10,7 @@ module.exports = {
   ],
   testMatch: [
     '**/__tests__/**/*.js',
-    '**/?(*.)+(spec|test).js'
+    '**/?(*.)+(spec|test).js',
   ],
-  testTimeout: 10000
+  testTimeout: 10000,
 };

@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useStoryContext } from "../../hooks/Story/useStoryContext";
+import { useAuthContext } from "../../hooks/Auth/useAuthContext";
 
 export const useGetAllStories = () => {
   const { dispatch } = useStoryContext();
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(null);
-  
+  const { user } = useAuthContext();
+
   const getAllStories = async () => {
     setIsLoading(true);
     setError(null);
@@ -18,7 +20,10 @@ export const useGetAllStories = () => {
 
     const response = await fetch(`${BASE_URL}/api/stories`, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
     });
 
     const json = await response.json();
@@ -30,10 +35,10 @@ export const useGetAllStories = () => {
 
     if (response.ok) {
       // Dispatch the fetched stories to the context
-      dispatch({ type: "GET_STORIES", payload: json });
-
+      dispatch({ type: "GET_STORIES", payload: json.response.stories });
+      console.log("Fetched Stories:", json);
       setIsLoading(false);
     }
-  }
-  return { getAllStories, isLoading, error };
-}
+  };
+  return { getAllStories, getAllStoriesLoading: isLoading, getAllStoriesError: error  };
+};

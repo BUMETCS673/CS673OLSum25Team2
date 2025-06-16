@@ -1,4 +1,5 @@
 const OpenAI = require("openai");
+const parentalControls = require("../models/ParentalControlsModel");
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -9,15 +10,32 @@ const generateStoryWithOpenAI = async ({
   character,
   setting,
   theme,
+  userId,
   ageGroup = "3-5",
 }) => {
   try {
+    console.log(userId);
+    // Fetch parental controls for the user
+    const controls = await parentalControls.findOne({ userId });
+
+    console.log(controls);
+    // Get word count from parental controls
+    const wordCount = controls.storyConfig.wordCount;
+
+    // Build content filtering instructions
+    const contentFilteringPrompt = controls.storyConfig.blockedTopics
+      ? `IMPORTANT: This story must be completely safe for children. Avoid any content related to: ${controls.storyConfig.blockedTopics.join(
+          ", "
+        )}. ` +
+        `Keep the story positive, gentle, and appropriate for the specified age group.`
+      : "";
+
     const completion = await openai.chat.completions.create({
       model: "gpt-4",
       messages: [
         {
           role: "system",
-          content: `You are a talented children's bedtime story writer. Create engaging, gentle, and age-appropriate stories that help children relax and fall asleep. Keep stories positive, educational, and calming.`,
+          content: `You are a talented children's bedtime story writer. Create engaging, gentle, and age-appropriate stories that help children relax and fall asleep. Keep stories positive, educational, and calming. ${contentFilteringPrompt}`,
         },
         {
           role: "user",
@@ -26,6 +44,15 @@ const generateStoryWithOpenAI = async ({
 - Setting: ${setting}
 - Theme/lesson: ${theme}
 
+CONTENT GUIDELINES:
+- Word count: approximately ${wordCount} words
+- Only include themes from this approved list: ${controls.storyConfig.allowedThemes.join(
+            ", "
+          )}
+- Completely avoid these topics: ${controls.storyConfig.blockedTopics.join(
+            ", "
+          )}
+
 Please respond in this exact JSON format:
 {
   "title": "A catchy, child-friendly title",
@@ -33,7 +60,7 @@ Please respond in this exact JSON format:
   "summary": "A brief 1-2 sentence summary of the story",
   "imageDescription": "A detailed description of an illustration for this story, suitable for an AI image generator. Include the main Character : ${character}, Setting: ${setting} , Theme/lesson: ${theme}, mood, colors, and style appropriate for children's book illustration."
 }
-Make it approximately 150-300 words, with simple language and a peaceful ending that encourages sleep.`,
+Make it approximately ${wordCount} words, with simple language and a peaceful ending that encourages sleep.`,
         },
       ],
       max_tokens: 800,
@@ -53,18 +80,37 @@ Make it approximately 150-300 words, with simple language and a peaceful ending 
 };
 
 // Generate an image using OpenAI's DALL-E model with the imageDescription
-const generateImageWithOpenAI = async (imageDescription) => {
+const generateImageWithOpenAI = async (imageDescription, userId) => {
   try {
     // Add emphasis on no text to the existing image description
     const enhancedPrompt = `${imageDescription} Pure visual illustration only - no text, no words, no letters, no titles, no captions, no speech bubbles, no written elements of any kind.`;
+    const controls = await parentalControls.findOne({ userId });
 
-    const result = await openai.images.generate({
-      model: "dall-e-3",
-      prompt: enhancedPrompt,
-      size: "1024x1024",
-      quality: "standard",
-      n: 1,
-    });
+    const newModel =
+      controls.imageConfig.model === "gpt-image-1"
+        ? "dall-e-3"
+        : controls.imageConfig.model;
+        
+    // const newQuality = controls.imageConfig.model === 'gpt-image-1' ? 'auto' : 'standard';
+    // const newQuality = newModel === 'gpt-image-1' ? 'auto' : 'standard';
+
+    let result;
+    if (newModel === "dall-e-3") {
+        result = await openai.images.generate({
+        model: "dall-e-3",
+        prompt: enhancedPrompt,
+        size: "1024x1024",
+        quality: "standard",
+        n: 1,
+      });
+    }else {
+        result = await openai.images.generate({
+        model: "dall-e-2",
+        prompt: enhancedPrompt,
+        size: "1024x1024",
+        n: 1,
+      });
+    }
 
     return {
       imageUrl: result.data[0].url,

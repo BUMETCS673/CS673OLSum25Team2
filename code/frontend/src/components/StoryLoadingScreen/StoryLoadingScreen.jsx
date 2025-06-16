@@ -88,7 +88,7 @@ const StoryLoadingAnimation = ({
   );
 
   const getSubtitleText = () => {
-    if (isStoryComplete) return 'Story generation complete!';
+    if (isStoryComplete && isImageComplete && isAudioComplete) return 'Story generation complete!';
     if (isLoadingStory) return 'Creating your magical story...';
     if (isLoadingImage || isLoadingAudio) return 'Adding magical touches...';
     return 'Preparing your story...';
@@ -138,7 +138,7 @@ const StoryLoadingAnimation = ({
             icon={BookIcon}
             title="Story Content"
             isLoading={isLoadingStory}
-            isComplete={!isLoadingStory && !isLoadingImage && !isLoadingAudio}
+            isComplete={isStoryComplete}
           />
           
           <LoadingStep
@@ -158,7 +158,7 @@ const StoryLoadingAnimation = ({
           />
         </div>
 
-        {isStoryComplete && (
+        {isStoryComplete && isImageComplete && isAudioComplete && (
           <div className="completion-banner">
             <div className="completion-content">
               <div className="completion-check-icon">

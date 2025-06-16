@@ -1,4 +1,5 @@
 const User = require('../models/UserModel');
+const ParentalControls = require('../models/ParentalControlsModel');
 const jwt = require('jsonwebtoken');
 
 const createToken = (_id) => {
@@ -34,6 +35,14 @@ const signupUser = async (req, res) => {
     const token = createToken(user._id);
 
     res.status(200).json({email, token});
+
+
+    //Create default parental controls for the user
+    const parentalControls = new ParentalControls({
+      userId: user._id // Link to user
+    });
+
+    await parentalControls.save();
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

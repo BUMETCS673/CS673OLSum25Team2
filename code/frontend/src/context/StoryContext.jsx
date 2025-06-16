@@ -8,54 +8,22 @@ export const StoryReducer = (state, action) => {
       return {
         ...state,
         generatedStory: action.payload,
-        stories: [action.payload, ...state.stories],
         loading: false,
         error: null,
       };
-    case "GET_STORY":
+    case "RESET_GENERATE_STORY":
       return {
         ...state,
-        currentStory: action.payload,
+        generatedStory: null,
         loading: false,
         error: null,
       };
     case "GET_STORIES":
       return {
         ...state,
-        stories: action.payload,
+        allStories: action.payload,
         loading: false,
         error: null,
-      };
-
-    case "TOGGLE_FAVORITE":
-      return {
-        ...state,
-        stories: state.stories.map((story) =>
-          story._id === action.payload.id
-            ? { ...story, isFavorite: action.payload.isFavorite }
-            : story
-        ),
-        currentStory:
-          state.currentStory?._id === action.payload.id
-            ? { ...state.currentStory, isFavorite: action.payload.isFavorite }
-            : state.currentStory,
-      };
-
-    case "INCREMENT_READ_COUNT":
-      return {
-        ...state,
-        stories: state.stories.map((story) =>
-          story._id === action.payload
-            ? { ...story, readCount: (story.readCount || 0) + 1 }
-            : story
-        ),
-        currentStory:
-          state.currentStory?._id === action.payload
-            ? {
-                ...state.currentStory,
-                readCount: (state.currentStory.readCount || 0) + 1,
-              }
-            : state.currentStory,
       };
 
     default:
@@ -66,7 +34,7 @@ export const StoryReducer = (state, action) => {
 export const StoryContextProvider = ({ children }) => {
   const initialState = {
     generatedStory: null,
-    stories: [],
+    allStories: [],
     currentStory: null,
     loading: false,
     error: null,

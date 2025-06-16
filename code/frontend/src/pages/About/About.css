@@ -1,163 +1,87 @@
 .About {
-    display: flex;
-    min-height: 100vh;
-    overflow-x: hidden;
-    overflow-y: auto;
-    position: relative;
-    background-color: var(--dark);
-    color: var(--white);
-    padding-top: 90px;
+  min-height: 100vh;
+  background: url("../../assets/about_img.png") no-repeat center center;
+  background-size: cover;
+  color: var(--white);
+  padding: 200px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
 }
 
-/* LEFT SIDE */
-.about-left {
-    flex: 1;
-    position: relative;
-    background-color: var(--dark);
-    overflow: hidden;
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-end;
-    padding: 0;
+.about-container {
+  /* background: #ffffff;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.357) 0%,
+    rgba(255, 255, 255, 0.543) 50%,
+    rgba(255, 255, 255, 0.506) 99%
+  );
+  backdrop-filter: blur(16px); */
+  background: var(--button-gradient);
+  opacity: 96%;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  max-width: 800px;
+  width: 90%;
+  padding: 40px 30px;
+  text-align: center;
+  font-family: var(--main-font);
 }
 
-.about-image {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: auto;
-    height: auto;
-    max-width: 1000px;
-    object-fit: contain;
-    z-index: 0;
+.about-container h2 {
+  font-family: var(--accent-font);
+  font-size: 42px;
+  margin-bottom: 20px;
+  color: var(--dark);
 }
 
-.about-h1 {
-    position: absolute;
-    top: 40px;
-    left: 60px;
-    font-size: 60px;
-    font-family: var(--accent-font);
-    color: var(--accent);
-    z-index: 1;
+.about-container h3 {
+  font-family: var(--accent-font);
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 20px;
+  color: var(--dark);
 }
 
-/* RIGHT SIDE */
-.about-right {
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: 100%;
-    width: 55%;
-    background-color: var(--accent);
-    clip-path: polygon(35% 0%, 100% 0%, 100% 100%, 0% 100%);
-    z-index: 2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 60px 40px;
-    overflow-y: auto;
-}
-
-.about-box {
-    max-width: 500px;
-    padding-top: 60px;
-    width: 100%;
-    text-align: center;
-    align-items: center;
-    margin-left: 80px;
-    z-index: 3;
-    font-family: var(--main-font);
-}
-
-.about-box h2 {
-    font-family: var(--accent-font);
-    font-size: 36px;
-    margin-bottom: 20px;
-    color: #111;
-}
-
-.about-box p {
-    font-size: 16px;
-    margin-bottom: 14px;
-    line-height: 1.6;
-    color: #111;
-}
-
-.about-section {
-    margin-bottom: 30px;
-}
-
-.about-section h3 {
-    font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #111;
-}
-
-.about-section ul {
-    padding-left: 18px;
-    margin-top: 6px;
-}
-
-.about-section ul li {
-    font-size: 16px;
-    line-height: 1.5;
-    color: #111;
+.about-container p {
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: 14px;
+  line-height: 1.6;
+  color: var(--dark);
 }
 
 /* Responsive Design */
 @media only screen and (max-width: 960px) {
-    .About {
-        flex-direction: column;
-        height: auto;
-        padding-top: 100px;
-        padding-bottom: 400px;
-    }
+  .about-container h2 {
+    font-size: 30px;
+  }
 
-    .about-left {
-        justify-content: center;
-        align-items: center;
-    }
+  .about-container h3 {
+    font-size: 30px;
+  }
 
-    .about-h1 {
-        position: static;
-        font-size: 60px;
-        text-align: center;
-        margin: 0 auto;
-    }
-
-    .about-right {
-        position: static;
-        width: 100%;
-        clip-path: none;
-        background-color: #f9b885;
-        padding: 40px 20px;
-    }
-
-    .about-box {
-        margin: 0;
-        padding-bottom: 100px;
-    }
-
-    .about-image {
-        width: 100%;
-        height: auto;
-        top: 60%;
-    }
+  .about-container p {
+    font-size: 15px;
+  }
 }
 
 @media only screen and (max-width: 600px) {
-    .about-h1 {
-        font-size: 40px;
-    }
+  .About {
+    padding: 100px 24px;
+    gap: 24px;
+  }
+  .about-container h2 {
+    font-size: 26px;
+  }
 
-    .about-box h2 {
-        font-size: 28px;
-    }
+  .about-container h3 {
+    font-size: 26px;
+  }
 
-    .about-box p,
-    .about-section ul li {
-        font-size: 14px;
-    }
+  .about-container p {
+    font-size: 14px;
+  }
 }

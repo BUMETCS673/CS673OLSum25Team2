@@ -5,30 +5,8 @@
   width: 100%;
   min-height: 100vh;
   background: var(--main-gradient);
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
-}
-
-::-webkit-scrollbar {
-    display: none;
-}
-
-.home-signin-btn {
-  font-family: var(--main-font);
-  font-weight: 600;
-  font-size: 18px;
-  color: var(--accent);
-  border: 1px solid var(--accent);
-  border-radius: 20px;
-  background-color: transparent;
-  padding: 6px 24px;
-  cursor: pointer;
-  transition: all ease-in-out 500ms;
-}
-.home-signin-btn:hover {
-  color: var(--dark);
-  border: 1px solid transparent;
-  background: var(--button-gradient);
 }
 
 .home-screen-container {
@@ -86,15 +64,33 @@
   cursor: pointer;
   transition: all ease-in-out 500ms;
 }
+
 .home-main-btn:hover {
   color: var(--dark);
   border: 1px solid transparent;
   background: var(--button-gradient);
 }
 
-@media only screen and (max-width: 1400px) {
+@media only screen and (min-width: 1460px) {
+  .main-image {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: -200px;
+  }
+  .home-text-overlay {
+    padding-right: 8px;
+  }
+}
+@media only screen and (min-width: 1280px) {
   .main-image {
     width: 90%;
+    position: absolute;
+    top: 0;
+    left: -140px;
+  }
+  .home-text-overlay {
+    padding-right: 24px;
   }
 }
 @media only screen and (max-width: 1280px) {
@@ -102,7 +98,6 @@
     width: 90%;
   }
   .home-text-overlay {
-    position: absolute;
     top: 36%;
     right: 0%;
     margin: 0 auto;
@@ -115,9 +110,6 @@
 }
 
 @media only screen and (max-width: 1024px) {
-  .Home nav {
-    padding: 24px;
-  }
   .home-text-overlay {
     right: 0;
     left: 0;
@@ -179,6 +171,7 @@
     top: 40%;
   }
 }
+
 @media only screen and (max-width: 420px) {
   .home-text-overlay h1 {
     font-size: 54px;

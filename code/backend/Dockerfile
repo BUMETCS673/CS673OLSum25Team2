@@ -2,20 +2,26 @@ FROM node:23-alpine
 
 WORKDIR /app
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
+ENV PATH="/app/node_modules/.bin:$PATH"
 
-# Install dependencies
-RUN npm install
+# Add essential Alpine tools for builds and debugging
+RUN apk add --no-cache bash git
 
-# Install nodemon globally for development
+# Copy both dependency files first (preserve cache layer)
+COPY package.json package-lock.json ./
+
+# Ensure dev dependencies (like Jest) are installed
+RUN npm install --include=dev
+
+# Install nodemon globally for development use
 RUN npm install -g nodemon
 
-# Copy the rest of the application code
+# Copy in the rest of the application source
 COPY . .
 
-# Expose the port the API will run on
+# Set coverage directory permissions just in case
+RUN mkdir -p coverage && chmod -R 777 coverage
+
 EXPOSE 5500
 
-# Command to run the API with nodemon for auto-reloading
-CMD ["npm", "run","dev"]
+CMD ["npm", "run", "dev"]

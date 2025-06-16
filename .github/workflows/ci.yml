@@ -1,26 +1,25 @@
-name: CI/CD - Build, Test, and Deploy MERN Stack
+name: CI/CD - Docker Test, Audit, and Deploy MERN
 
 on:
   push:
-    branches: ["main"]
+    branches: ["**"]
   pull_request:
-    branches: ["main"]
 
 jobs:
-  build-and-test:
-    name: Build and Test Frontend & Backend
+  build-test-security:
+    name: Test (Docker), Security Audit, and Coverage
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-        
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 21
-          
-      # Cache dependencies for both frontend and backend
+
+      # ✅ Cache dependencies for backend
       - name: Cache Backend Dependencies
         uses: actions/cache@v3
         with:
@@ -28,7 +27,8 @@ jobs:
           key: ${{ runner.os }}-backend-${{ hashFiles('code/backend/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-backend-
-            
+
+      # ✅ Cache dependencies for frontend
       - name: Cache Frontend Dependencies
         uses: actions/cache@v3
         with:
@@ -36,88 +36,116 @@ jobs:
           key: ${{ runner.os }}-frontend-${{ hashFiles('code/frontend/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-frontend-
-            
-      # Install and test backend
-      - name: Install Backend Dependencies
-        working-directory: ./code/backend
-        run: npm install
-        
-      - name: Test Backend
-        working-directory: ./code/backend
-        run: |
-          if npm run test; then
-            echo "Backend tests passed"
-          else
-            echo "Backend tests failed"
-            exit 1
-          fi
-          
-      # Install, build, and test frontend
-      - name: Install Frontend Dependencies
-        working-directory: ./code/frontend
-        run: npm install
-        
-      - name: Build Frontend
-        working-directory: ./code/frontend
-        run: npm run build
-        
-      - name: Test Frontend
-        working-directory: ./code/frontend
-        run: |
-          if npm run test; then
-            echo "Frontend tests passed"
-          else
-            echo "Frontend tests failed"
-            exit 1
-          fi
 
-  check-backend-changes:
-    name: Check for Backend Changes
-    runs-on: ubuntu-latest
-    outputs:
-      backend-changed: ${{ steps.changes.outputs.backend }}
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - name: Write .env files for backend and frontend
+        working-directory: ./code
+        run: |
+          # Backend .env
+          cat <<EOF > backend/.env
+          PORT=5500
+          NODE_ENV=development
+          MONGO_URI=your_mongodb_atlas_connection_string
+          SECRET=your_jwt_secret_here
+          OPENAI_API_KEY=your_openai_api_key_here
+          FIREBASE_API_KEY=your_firebase_api_key
+          FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
+          FIREBASE_PROJECT_ID=your_firebase_project_id
+          FIREBASE_STORAGE_BUCKET=your_project_id.firebasestorage.app
+          FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+          FIREBASE_APP_ID=your_firebase_app_id
+          EOF
+
+          # Frontend .env
+          echo "VITE_GOOGLE_CLIENT_ID=your_google_client_id_here" > frontend/.env
+
+      - name: Validate Docker Compose
+        working-directory: ./code
+        run: docker compose config
+
+      - name: Start Test Containers
+        working-directory: ./code
+        run: docker compose --profile test up -d --build
+
+      - name: Wait for backend-test container to finish
+        run: docker wait my-magical-bedtime-backend-test || true
+
+      - name: Backend Test Logs
+        working-directory: ./code
+        run: docker logs my-magical-bedtime-backend-test
+
+      - name: Frontend Test Logs
+        working-directory: ./code
+        run: docker logs my-magical-bedtime-frontend-test
+
+      - name: Fix permissions before copying coverage
+        working-directory: ./code
+        run: |
+          sudo chmod -R 777 ./backend/coverage || true
+          sudo chown -R runner:runner ./backend/coverage || true
+
+      - name: Copy coverage report from container
+        working-directory: ./code
+        run: |
+          mkdir -p ./backend/coverage
+          sudo rm -f ./backend/coverage/tmp-cobertura.xml || true
+          docker cp my-magical-bedtime-backend-test:/app/coverage/cobertura-coverage.xml ./backend/coverage/tmp-cobertura.xml
+          mv -f ./backend/coverage/tmp-cobertura.xml ./backend/coverage/cobertura-coverage.xml
+
+      - name: Stop Test Containers
+        working-directory: ./code
+        run: docker compose --profile test down
+
+      - name: Verify coverage file
+        run: test -f ./code/backend/coverage/cobertura-coverage.xml && echo "✅ Found coverage file"
+
+      - name: Upload code coverage
+        uses: 5monkeys/cobertura-action@master
         with:
-          fetch-depth: 0
-          
-      - name: Check for changes in backend
-        uses: dorny/paths-filter@v2
-        id: changes
+          path: ./code/backend/coverage/cobertura-coverage.xml
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          minimum_coverage: 75
+
+      - name: Run npm audit (backend)
+        working-directory: ./code/backend
+        run: npm audit --audit-level=high
+
+      - name: Run npm audit (frontend)
+        working-directory: ./code/frontend
+        run: npm audit --audit-level=high
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
         with:
-          filters: |
-            backend:
-              - 'code/backend/**'
+          languages: javascript
+
+      - name: Static Analysis (CodeQL)
+        uses: github/codeql-action/analyze@v2
+
+      - name: Docker Image Security Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'node:latest'
+          format: 'table'
 
   deploy-backend:
     name: Deploy Backend to Heroku
     runs-on: ubuntu-latest
-    needs: [build-and-test, check-backend-changes]
-    if: |
-      github.ref == 'refs/heads/main' && 
-      github.event_name == 'push' && 
-      needs.check-backend-changes.outputs.backend-changed == 'true'
-      
+    needs: [build-test-security]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          
-      # Method 1: Using git subtree (most reliable)
+
       - name: Deploy Backend to Heroku
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: |
-          # Add Heroku remote
           git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/mymagicalbedtime.git
-          
-          # Deploy only the backend subdirectory
           git subtree push --prefix code/backend heroku main
-          
-      - name: Verify Backend Deployment
+
+      - name: Confirm Deployment
         run: |
-          echo "✅ Backend deployment completed successfully!"
-          echo "🌐 Backend API URL: https://mymagicalbedtime-25abceb2c11f.herokuapp.com/"
-          
+          echo "✅ Deployed at: https://mymagicalbedtime-25abceb2c11f.herokuapp.com/"

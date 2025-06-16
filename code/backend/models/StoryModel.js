@@ -92,7 +92,7 @@ const StorySchema = new Schema(
     },
     audioBuffer: {
       type: Buffer, // Store audio as binary data
-      required: false, // Optional, can be generated later
+      required: false, // Optional,  will be generated later
     },
     audioVoice: {
       type: String,
@@ -119,16 +119,7 @@ const StorySchema = new Schema(
     },
 
     // User interaction
-    readCount: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-    playCount: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
+
     isFavorite: {
       type: Boolean,
       default: false,

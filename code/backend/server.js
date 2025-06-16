@@ -4,6 +4,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const userRoutes = require("./routes/user");
 const storyRoutes = require("./routes/story");
+const settingRoutes = require("./routes/setting");
 const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
@@ -31,7 +32,7 @@ app.use(helmet()); // Security headers
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 20, // Limit each IP to 20 requests per windowMs
+  max: 1000, // Limit each IP to 100 requests per windowMs
   message: {
     error: "Too many requests from this IP, please try again later.",
   },
@@ -41,6 +42,7 @@ app.use("/api/", limiter);
 // routes
 app.use("/api/user", userRoutes);
 app.use("/api/stories", storyRoutes);
+app.use("/api/settings", settingRoutes);
 
 // Logging middleware
 app.use((req, res, next) => {

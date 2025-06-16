@@ -118,21 +118,36 @@ code/
 │   ├── .env                    # Backend environment variables
 │   └── Dockerfile              # Backend container config
 ├── docker-compose.yml          # Multi-container setup
-└── README.md                   # Project documentation                   # Project documentation
+└── README.md                   # Project documentation              
 ```
 
 ## 🔌 API Endpoints
 
-### Authentication
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
-- `POST /api/auth/logout` - User logout
 
-### Stories
-- `GET /api/stories` - Get user stories
-- `POST /api/stories/generate` - Generate new story
-- `GET /api/stories/:id` - Get specific story
-- `DELETE /api/stories/:id` - Delete story
+# API Endpoints
+
+## Authentication
+* `POST /api/auth/login` - User login
+* `POST /api/auth/signup` - User registration
+* `POST /api/auth/logout` - User logout
+
+
+## Stories
+* `GET /api/stories` - Get user stories
+* `POST /api/stories/generate/story` - Generate new story
+* `POST /api/stories/generate/image` - Generate story image
+* `POST /api/stories/generate/audio` - Generate story audio
+* `POST /api/stories/generate/audio_sample` - Generate audio sample
+* `GET /api/stories/:id` - Get specific story
+* `PUT /api/stories/:id/save` - Save story to favorites
+* `DELETE /api/stories/:id` - Delete story
+
+## Settings
+* `GET /api/settings` - Get user settings
+* `GET /api/settings/enums` - Get settings enums/options
+* `PUT /api/settings/update` - Update user settings
+
+**Note:** All story and settings endpoints require authentication.
 
 
 ## 🎯 Target Audience
