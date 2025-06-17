@@ -1,0 +1,71 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    env_file:
+      - ./frontend/.env
+    container_name: my-magical-bedtime-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - backend
+    stdin_open: true
+    tty: true
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - ./backend/.env
+    container_name: my-magical-bedtime-backend
+    ports:
+      - "5500:5500"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=5500
+      - CORS_ORIGIN=http://localhost:5173
+    stdin_open: true
+    tty: true
+
+  backend-test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: my-magical-bedtime-backend-test
+    volumes:
+      - ./backend:/app
+      - ./backend/coverage:/app/coverage
+    environment:
+      - NODE_ENV=test
+      - OPENAI_API_KEY=dummy-key-for-testing
+    command: ["/bin/sh", "-c", "export PATH=$PATH:/app/node_modules/.bin && npm install --include=dev && npm install -g jest && jest --coverage --coverageReporters=cobertura --testPathPattern=controllers && ls -lh coverage/"]
+    profiles:
+      - test
+
+  frontend-test:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: my-magical-bedtime-frontend-test
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=test
+    command: npm test
+    profiles:
+      - test
+
+networks:
+  default:
+    name: code_default
