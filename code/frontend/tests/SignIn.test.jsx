@@ -1,21 +1,31 @@
 import React from 'react';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom';
 import { BrowserRouter } from 'react-router-dom';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import '@testing-library/jest-dom/vitest';
 import SignIn from '../src/pages/Auth/SignIn/SignIn';
-import { useLogin } from '../src/hooks/Auth/useLogin';
+import { useNavigate } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
+import { useLogin } from '../src/hooks/Auth/useLogin';
 
-// Mock the useLogin hook
-vi.mock('../src/hooks/Auth/useLogin');
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: vi.fn(),
+  };
+});
 
-// Mock the Google OAuth hook
 vi.mock('@react-oauth/google', () => ({
   useGoogleLogin: vi.fn(),
 }));
 
-// Mock FontAwesome components
+vi.mock('../src/hooks/Auth/useLogin', () => ({
+  useLogin: vi.fn(),
+}));
+
+// Mock FontAwesome
 vi.mock('@fortawesome/react-fontawesome', () => ({
   FontAwesomeIcon: ({ icon, className }) => (
     <span data-testid="font-awesome-icon" className={className}>
@@ -24,468 +34,340 @@ vi.mock('@fortawesome/react-fontawesome', () => ({
   ),
 }));
 
-// Mock CSS import
-vi.mock('./SignIn.css', () => ({}));
-
-// Mock image import
-vi.mock('../src/assets/signin_image.png', () => ({
-  default: 'mocked-signin-image.png'
-}));
-
-// Helper function to render component with router
-const renderWithRouter = (component) => {
-  return render(<BrowserRouter>{component}</BrowserRouter>);
-};
-
 describe('SignIn Component', () => {
-  const mockLogin = vi.fn();
-  const mockGoogleLogin = vi.fn();
-  const mockUseLogin = vi.mocked(useLogin);
-  const mockUseGoogleLogin = vi.mocked(useGoogleLogin);
+  let mockNavigate;
+  let mockLogin;
+  let mockGoogleLogin;
 
   beforeEach(() => {
-    // Reset mocks before each test
-    vi.clearAllMocks();
-    
-    // Default mock implementation for useLogin
-    mockUseLogin.mockReturnValue({
+    mockNavigate = vi.fn();
+    mockLogin = vi.fn();
+    mockGoogleLogin = vi.fn();
+
+    useNavigate.mockReturnValue(mockNavigate);
+    useLogin.mockReturnValue({
       login: mockLogin,
       error: null,
       isLoading: false,
     });
-
-    // Default mock implementation for useGoogleLogin
-    mockUseGoogleLogin.mockReturnValue(mockGoogleLogin);
+    useGoogleLogin.mockImplementation((config) => {
+      mockGoogleLogin.onSuccess = config.onSuccess;
+      mockGoogleLogin.onError = config.onError;
+      return mockGoogleLogin;
+    });
   });
 
-  describe('Rendering', () => {
-    it('renders all form elements correctly', () => {
-      renderWithRouter(<SignIn />);
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
 
-      expect(screen.getByText('MY MAGICAL BEDTIME')).toBeInTheDocument();
-      expect(screen.getByText('Welcome!')).toBeInTheDocument();
-      expect(screen.getByPlaceholderText('Email')).toBeInTheDocument();
-      expect(screen.getByPlaceholderText('Password')).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: 'SIGN IN' })).toBeInTheDocument();
-      expect(screen.getByText('Continue with Google')).toBeInTheDocument();
+  const renderSignIn = () => {
+    return render(
+      <BrowserRouter>
+        <SignIn />
+      </BrowserRouter>
+    );
+  };
+
+  describe('Component Structure', () => {
+    it('should render the main section with correct class', () => {
+      renderSignIn();
+      const section = document.querySelector('section.SignIn');
+      expect(section).toBeInTheDocument();
     });
 
-    it('renders sign up link correctly', () => {
-      renderWithRouter(<SignIn />);
+    it('should render the header with app name', () => {
+      renderSignIn();
+      const header = screen.getByRole('heading', { 
+        level: 1, 
+        name: 'MY MAGICAL BEDTIME' 
+      });
+      expect(header).toBeInTheDocument();
+    });
+
+    it('should render welcome heading', () => {
+      renderSignIn();
+      const heading = screen.getByRole('heading', { 
+        level: 2, 
+        name: 'Welcome!' 
+      });
+      expect(heading).toBeInTheDocument();
+    });
+
+    it('should render the illustration image', () => {
+      renderSignIn();
+      const image = screen.getByAltText('Illustration');
+      expect(image).toBeInTheDocument();
+      expect(image).toHaveClass('signin-image');
+    });
+  });
+
+  describe('Form Elements', () => {
+    it('should render all input fields', () => {
+      renderSignIn();
       
+      expect(screen.getByPlaceholderText('Email')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Password')).toBeInTheDocument();
+    });
+
+    it('should render submit button', () => {
+      renderSignIn();
+      const submitButton = screen.getByRole('button', { name: 'SIGN IN' });
+      expect(submitButton).toBeInTheDocument();
+      expect(submitButton).toHaveAttribute('type', 'submit');
+    });
+
+    it('should render Google sign-in button', () => {
+      renderSignIn();
+      const googleButton = screen.getByRole('button', { name: /Continue with Google/i });
+      expect(googleButton).toBeInTheDocument();
+    });
+
+    it('should render sign up link', () => {
+      renderSignIn();
       const signUpLink = screen.getByRole('link', { name: 'Sign up' });
       expect(signUpLink).toBeInTheDocument();
       expect(signUpLink).toHaveAttribute('href', '/signup');
     });
-
-    it('renders illustration image', () => {
-      renderWithRouter(<SignIn />);
-      
-      const image = screen.getByAltText('Illustration');
-      expect(image).toBeInTheDocument();
-      expect(image).toHaveAttribute('src');
-      const srcValue = image.getAttribute('src');
-      expect(srcValue).toBeTruthy();
-    });
-
-    it('renders divider with OR text', () => {
-      renderWithRouter(<SignIn />);
-      
-      expect(screen.getByText('OR')).toBeInTheDocument();
-    });
-
-    it('renders account creation prompt text', () => {
-      renderWithRouter(<SignIn />);
-      
-      expect(screen.getByText("Don't have an account?")).toBeInTheDocument();
-    });
   });
 
   describe('Password Visibility Toggle', () => {
-    it('password field is initially hidden', () => {
-      renderWithRouter(<SignIn />);
-      
+    it('should initially show password as hidden', () => {
+      renderSignIn();
       const passwordInput = screen.getByPlaceholderText('Password');
       expect(passwordInput).toHaveAttribute('type', 'password');
     });
 
-    it('toggles password visibility when eye icon is clicked', () => {
-      renderWithRouter(<SignIn />);
-      
+    it('should toggle password visibility when eye icon is clicked', async () => {
+      renderSignIn();
+      const user = userEvent.setup();
       const passwordInput = screen.getByPlaceholderText('Password');
-      // Find the password toggle icon specifically by its parent container
-      const passwordWrapper = document.querySelector('.password-wrapper');
-      const toggleIcon = passwordWrapper.querySelector('[data-testid="font-awesome-icon"]');
-      
-      // Initially hidden
+      const toggleIcon = passwordInput.parentElement.querySelector('.toggle-icon');
+
+      // Initially password should be hidden
       expect(passwordInput).toHaveAttribute('type', 'password');
-      
-      // Click to show
-      fireEvent.click(toggleIcon);
+
+      // Click to show password
+      await user.click(toggleIcon);
       expect(passwordInput).toHaveAttribute('type', 'text');
-      
-      // Click to hide again
-      fireEvent.click(toggleIcon);
+
+      // Click to hide password again
+      await user.click(toggleIcon);
       expect(passwordInput).toHaveAttribute('type', 'password');
     });
   });
 
   describe('Form Submission', () => {
-    it('calls login function with correct parameters on form submission', async () => {
-      renderWithRouter(<SignIn />);
-      
-      const emailInput = screen.getByPlaceholderText('Email');
-      const passwordInput = screen.getByPlaceholderText('Password');
-      const submitButton = screen.getByRole('button', { name: 'SIGN IN' });
+    it('should call login with form data on submit', async () => {
+      renderSignIn();
+      const user = userEvent.setup();
 
-      // Fill in form
-      fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
-      fireEvent.change(passwordInput, { target: { value: 'password123' } });
+      await user.type(screen.getByPlaceholderText('Email'), 'test@example.com');
+      await user.type(screen.getByPlaceholderText('Password'), 'password123');
 
-      // Submit form
-      fireEvent.click(submitButton);
+      const form = document.querySelector('.signin-form');
+      fireEvent.submit(form);
 
       await waitFor(() => {
         expect(mockLogin).toHaveBeenCalledWith('test@example.com', 'password123');
       });
     });
 
-    it('prevents default form submission behavior', () => {
-      renderWithRouter(<SignIn />);
-      
+    it('should navigate to /mystory after successful login', async () => {
+      renderSignIn();
+      const user = userEvent.setup();
+
+      await user.type(screen.getByPlaceholderText('Email'), 'test@example.com');
+      await user.type(screen.getByPlaceholderText('Password'), 'password123');
+
       const form = document.querySelector('.signin-form');
-      
-      // Fire submit event on the form
       fireEvent.submit(form);
-      
-      // The component should call login function, which indicates preventDefault was handled
-      expect(mockLogin).toHaveBeenCalled();
-    });
-
-    it('handles form submission with empty fields', async () => {
-      renderWithRouter(<SignIn />);
-      
-      const submitButton = screen.getByRole('button', { name: 'SIGN IN' });
-      fireEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(mockLogin).toHaveBeenCalledWith('', '');
+        expect(mockNavigate).toHaveBeenCalledWith('/mystory');
       });
     });
 
-    it('handles async form submission', async () => {
-      mockLogin.mockResolvedValue({ success: true });
-      
-      renderWithRouter(<SignIn />);
-      
-      const emailInput = screen.getByPlaceholderText('Email');
-      const passwordInput = screen.getByPlaceholderText('Password');
-      const submitButton = screen.getByRole('button', { name: 'SIGN IN' });
-
-      fireEvent.change(emailInput, { target: { value: 'async@test.com' } });
-      fireEvent.change(passwordInput, { target: { value: 'asyncpass' } });
-      fireEvent.click(submitButton);
-
-      await waitFor(() => {
-        expect(mockLogin).toHaveBeenCalledWith('async@test.com', 'asyncpass');
-      });
-    });
-  });
-
-  describe('Loading State', () => {
-    it('disables submit button when loading', () => {
-      mockUseLogin.mockReturnValue({
+    it('should disable submit button when loading', () => {
+      useLogin.mockReturnValue({
         login: mockLogin,
         error: null,
         isLoading: true,
       });
 
-      renderWithRouter(<SignIn />);
-      
+      renderSignIn();
       const submitButton = screen.getByRole('button', { name: 'SIGN IN' });
       expect(submitButton).toBeDisabled();
-    });
-
-    it('enables submit button when not loading', () => {
-      mockUseLogin.mockReturnValue({
-        login: mockLogin,
-        error: null,
-        isLoading: false,
-      });
-
-      renderWithRouter(<SignIn />);
-      
-      const submitButton = screen.getByRole('button', { name: 'SIGN IN' });
-      expect(submitButton).not.toBeDisabled();
     });
   });
 
   describe('Error Handling', () => {
-    it('displays error message when error exists', () => {
-      const errorMessage = 'Invalid credentials';
-      mockUseLogin.mockReturnValue({
+    it('should display error message when error exists', () => {
+      useLogin.mockReturnValue({
         login: mockLogin,
-        error: errorMessage,
+        error: 'Invalid credentials',
         isLoading: false,
       });
 
-      renderWithRouter(<SignIn />);
-      
-      expect(screen.getByText(errorMessage)).toBeInTheDocument();
-      expect(screen.getByText(errorMessage)).toHaveClass('error-message');
+      renderSignIn();
+      expect(screen.getByText('Invalid credentials')).toBeInTheDocument();
     });
 
-    it('does not display error message when no error', () => {
-      mockUseLogin.mockReturnValue({
-        login: mockLogin,
-        error: null,
-        isLoading: false,
-      });
-
-      renderWithRouter(<SignIn />);
-      
-      expect(screen.queryByText(/error/i)).not.toBeInTheDocument();
+    it('should not display error div when no error', () => {
+      renderSignIn();
+      const errorDiv = document.querySelector('.error-message');
+      expect(errorDiv).not.toBeInTheDocument();
     });
 
-    it('displays authentication error messages', () => {
-      const errorMessage = 'User not found';
-      mockUseLogin.mockReturnValue({
-        login: mockLogin,
-        error: errorMessage,
-        isLoading: false,
-      });
-
-      renderWithRouter(<SignIn />);
-      
-      expect(screen.getByText(errorMessage)).toBeInTheDocument();
-    });
-  });
-
-  describe('Form Validation', () => {
-    it('form inputs accept user input correctly', () => {
-      renderWithRouter(<SignIn />);
-      
-      const emailInput = screen.getByPlaceholderText('Email');
-      const passwordInput = screen.getByPlaceholderText('Password');
-
-      fireEvent.change(emailInput, { target: { value: 'user@example.com' } });
-      fireEvent.change(passwordInput, { target: { value: 'userpassword' } });
-
-      expect(emailInput.value).toBe('user@example.com');
-      expect(passwordInput.value).toBe('userpassword');
-    });
-
-    it('email input has correct type attribute', () => {
-      renderWithRouter(<SignIn />);
-      
-      const emailInput = screen.getByPlaceholderText('Email');
-      expect(emailInput).toHaveAttribute('type', 'email');
-    });
-  });
-
-  describe('Google OAuth Integration', () => {
-    it('calls useGoogleLogin hook on component mount', () => {
-      renderWithRouter(<SignIn />);
-      
-      expect(mockUseGoogleLogin).toHaveBeenCalled();
-    });
-
-    it('configures Google login with success callback', () => {
-      renderWithRouter(<SignIn />);
-      
-      expect(mockUseGoogleLogin).toHaveBeenCalledWith({
-        onSuccess: expect.any(Function)
-      });
-    });
-
-    it('calls Google login function when Google button is clicked', () => {
-      renderWithRouter(<SignIn />);
-      
-      const googleButton = screen.getByText('Continue with Google');
-      fireEvent.click(googleButton);
-      
-      expect(mockGoogleLogin).toHaveBeenCalled();
-    });
-
-    it('handles Google login success callback', () => {
+    it('should log error on form submission if error exists', async () => {
       const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-      const mockTokenResponse = { access_token: 'test-token' };
-    
-      renderWithRouter(<SignIn />);
-    
-      // Check if the mock was called before accessing it
-      expect(mockUseGoogleLogin).toHaveBeenCalled();
-      expect(mockUseGoogleLogin.mock.calls).toHaveLength(1);
-      expect(mockUseGoogleLogin.mock.calls[0]).toBeDefined();
-      expect(mockUseGoogleLogin.mock.calls[0][0]).toBeDefined();
-    
-      // Get the onSuccess callback that was passed to useGoogleLogin
-      const onSuccessCallback = mockUseGoogleLogin.mock.calls[0][0].onSuccess;
-      expect(onSuccessCallback).toBeDefined();
-    
-      // Call the success callback directly
-      onSuccessCallback(mockTokenResponse);
-    
-      expect(consoleSpy).toHaveBeenCalledWith(mockTokenResponse);
-    
+      
+      useLogin.mockReturnValue({
+        login: mockLogin,
+        error: 'Network error',
+        isLoading: false,
+      });
+
+      renderSignIn();
+      const user = userEvent.setup();
+
+      await user.type(screen.getByPlaceholderText('Email'), 'test@example.com');
+      await user.type(screen.getByPlaceholderText('Password'), 'password123');
+
+      const form = document.querySelector('.signin-form');
+      fireEvent.submit(form);
+
+      expect(consoleSpy).toHaveBeenCalledWith('Network error');
       consoleSpy.mockRestore();
     });
   });
 
-  describe('Integration with useLogin Hook', () => {
-    it('calls useLogin hook on component mount', () => {
-      renderWithRouter(<SignIn />);
-      
-      expect(mockUseLogin).toHaveBeenCalled();
+  describe('Google Login', () => {
+    it('should call googleLogin when Google button is clicked', async () => {
+      renderSignIn();
+      const user = userEvent.setup();
+      const googleButton = screen.getByRole('button', { name: /Continue with Google/i });
+
+      await user.click(googleButton);
+      expect(mockGoogleLogin).toHaveBeenCalled();
     });
 
-    it('handles hook state changes correctly', () => {
-      const { rerender } = renderWithRouter(<SignIn />);
-      
-      // Initial state
-      expect(screen.getByRole('button', { name: 'SIGN IN' })).not.toBeDisabled();
-      
-      // Update to loading state
-      mockUseLogin.mockReturnValue({
-        login: mockLogin,
-        error: null,
-        isLoading: true,
+    it('should handle successful Google login', async () => {
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          email: 'user@gmail.com',
+          given_name: 'John',
+          family_name: 'Doe',
+          id: '123456',
+        }),
       });
-      
-      rerender(<BrowserRouter><SignIn /></BrowserRouter>);
-      expect(screen.getByRole('button', { name: 'SIGN IN' })).toBeDisabled();
+
+      renderSignIn();
+
+      const tokenResponse = { access_token: 'fake-token' };
+      await mockGoogleLogin.onSuccess(tokenResponse);
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://www.googleapis.com/oauth2/v2/userinfo',
+        {
+          headers: {
+            Authorization: 'Bearer fake-token',
+            Accept: 'application/json',
+          },
+        }
+      );
+
+      await waitFor(() => {
+        expect(mockLogin).toHaveBeenCalledWith(
+          'user@gmail.com',
+          'DOE123456user@gmail.com'
+        );
+        expect(mockNavigate).toHaveBeenCalledWith('/mystory');
+      });
+    });
+
+    it('should handle Google login error', () => {
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      renderSignIn();
+
+      const error = { message: 'Login failed' };
+      mockGoogleLogin.onError(error);
+
+      expect(consoleSpy).toHaveBeenCalledWith('Login Failed:', error);
+      consoleSpy.mockRestore();
+    });
+
+    it('should handle failed user info fetch', async () => {
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: false,
+      });
+
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      renderSignIn();
+
+      await mockGoogleLogin.onSuccess({ access_token: 'fake-token' });
+
+      expect(consoleSpy).toHaveBeenCalledWith('Failed to fetch user info');
+      consoleSpy.mockRestore();
     });
   });
 
-  describe('Accessibility', () => {
-    it('form has proper structure for screen readers', () => {
-      renderWithRouter(<SignIn />);
-      
-      // Find form by its class or by querying for the form element directly
-      const form = document.querySelector('.signin-form');
-      expect(form).toBeInTheDocument();
-      expect(form.tagName).toBe('FORM');
-      
-      const submitButton = screen.getByRole('button', { name: 'SIGN IN' });
-      expect(submitButton).toHaveAttribute('type', 'submit');
+  describe('UI Elements', () => {
+    it('should render divider with OR text', () => {
+      renderSignIn();
+      const divider = document.querySelector('.divider');
+      expect(divider).toBeInTheDocument();
+      expect(screen.getByText('OR')).toBeInTheDocument();
     });
 
-    it('password toggle button is accessible', () => {
-      renderWithRouter(<SignIn />);
-      
-      // Find the password toggle icon specifically by its parent container
-      const passwordWrapper = document.querySelector('.password-wrapper');
-      const toggleIcon = passwordWrapper.querySelector('[data-testid="font-awesome-icon"]');
-      
-      expect(toggleIcon).toBeInTheDocument();
-      
-      // Should be clickable
-      fireEvent.click(toggleIcon);
-      expect(screen.getByPlaceholderText('Password')).toHaveAttribute('type', 'text');
+    it('should render "Don\'t have an account?" text', () => {
+      renderSignIn();
+      expect(screen.getByText(/Don't have an account\?/i)).toBeInTheDocument();
     });
 
-    it('Google button is accessible', () => {
-      renderWithRouter(<SignIn />);
+    it('should apply correct CSS classes', () => {
+      renderSignIn();
       
-      const googleButton = screen.getByText('Continue with Google');
-      expect(googleButton.tagName).toBe('BUTTON');
+      expect(document.querySelector('.signin-header')).toBeInTheDocument();
+      expect(document.querySelector('.signin-right')).toBeInTheDocument();
+      expect(document.querySelector('.signin-box')).toBeInTheDocument();
+      expect(document.querySelector('.signin-form')).toBeInTheDocument();
+      expect(document.querySelector('.password-wrapper')).toBeInTheDocument();
+      expect(document.querySelector('.signin-bottom-image')).toBeInTheDocument();
+    });
+  });
+
+  describe('Input Types', () => {
+    it('should have correct input types', () => {
+      renderSignIn();
+      
+      expect(screen.getByPlaceholderText('Email')).toHaveAttribute('type', 'email');
+      expect(screen.getByPlaceholderText('Password')).toHaveAttribute('type', 'password');
     });
   });
 
   describe('Console Logging', () => {
-    it('logs form data to console on submission', async () => {
+    it('should log token response on successful Google login', async () => {
       const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
       
-      renderWithRouter(<SignIn />);
-      
-      const emailInput = screen.getByPlaceholderText('Email');
-      const passwordInput = screen.getByPlaceholderText('Password');
-      const submitButton = screen.getByRole('button', { name: 'SIGN IN' });
-
-      fireEvent.change(emailInput, { target: { value: 'log@test.com' } });
-      fireEvent.change(passwordInput, { target: { value: 'logpass' } });
-
-      fireEvent.click(submitButton);
-
-      await waitFor(() => {
-        expect(consoleSpy).toHaveBeenCalledWith('log@test.com', 'logpass');
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          email: 'user@gmail.com',
+          given_name: 'John',
+          family_name: 'Doe',
+          id: '123456',
+        }),
       });
-      
+
+      renderSignIn();
+
+      const tokenResponse = { access_token: 'fake-token' };
+      await mockGoogleLogin.onSuccess(tokenResponse);
+
+      expect(consoleSpy).toHaveBeenCalledWith('Token Response:', tokenResponse);
       consoleSpy.mockRestore();
-    });
-
-    it('logs error to console when error exists', async () => {
-      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-      const errorMessage = 'Test signin error';
-      
-      mockUseLogin.mockReturnValue({
-        login: mockLogin,
-        error: errorMessage,
-        isLoading: false,
-      });
-
-      renderWithRouter(<SignIn />);
-      
-      const submitButton = screen.getByRole('button', { name: 'SIGN IN' });
-      fireEvent.click(submitButton);
-
-      await waitFor(() => {
-        expect(consoleSpy).toHaveBeenCalledWith(errorMessage);
-      });
-      
-      consoleSpy.mockRestore();
-    });
-  });
-
-  describe('Component State Management', () => {
-    it('manages password visibility state correctly', () => {
-      renderWithRouter(<SignIn />);
-      
-      const passwordInput = screen.getByPlaceholderText('Password');
-      const passwordWrapper = document.querySelector('.password-wrapper');
-      const toggleIcon = passwordWrapper.querySelector('[data-testid="font-awesome-icon"]');
-      
-      // Test multiple toggles
-      expect(passwordInput).toHaveAttribute('type', 'password');
-      
-      fireEvent.click(toggleIcon);
-      expect(passwordInput).toHaveAttribute('type', 'text');
-      
-      fireEvent.click(toggleIcon);
-      expect(passwordInput).toHaveAttribute('type', 'password');
-      
-      fireEvent.click(toggleIcon);
-      expect(passwordInput).toHaveAttribute('type', 'text');
-    });
-  });
-
-  describe('Form Structure', () => {
-    it('has correct form structure with proper input order', () => {
-      renderWithRouter(<SignIn />);
-      
-      const form = document.querySelector('.signin-form');
-      const inputs = form.querySelectorAll('input');
-      
-      expect(inputs).toHaveLength(2);
-      expect(inputs[0]).toHaveAttribute('type', 'email');
-      expect(inputs[1]).toHaveAttribute('type', 'password');
-    });
-
-    it('form submission accesses inputs by correct index', async () => {
-      renderWithRouter(<SignIn />);
-      
-      const emailInput = screen.getByPlaceholderText('Email');
-      const passwordInput = screen.getByPlaceholderText('Password');
-      
-      fireEvent.change(emailInput, { target: { value: 'index@test.com' } });
-      fireEvent.change(passwordInput, { target: { value: 'indexpass' } });
-      
-      const submitButton = screen.getByRole('button', { name: 'SIGN IN' });
-      fireEvent.click(submitButton);
-
-      await waitFor(() => {
-        expect(mockLogin).toHaveBeenCalledWith('index@test.com', 'indexpass');
-      });
     });
   });
 });

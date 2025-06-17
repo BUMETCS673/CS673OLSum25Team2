@@ -1,323 +1,310 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import '@testing-library/jest-dom/vitest';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom';
 import Contact from '../src/pages/Contact/Contact';
-
-// Mock the CSS import
-vi.mock('./Contact.css', () => ({}));
-
-// Mock the image import
-vi.mock('../src/assets/signin_image.png', () => ({ 
-  default: 'mocked-signin-image.png' 
-}));
 
 describe('Contact Component', () => {
   beforeEach(() => {
-    render(<Contact />);
+    // Clear any previous renders
+    vi.clearAllMocks();
   });
+
+  const renderContact = () => {
+    return render(<Contact />);
+  };
 
   describe('Component Structure', () => {
-    it('renders main contact section', () => {
-      const contactSection = document.querySelector('.ContactPage');
-      expect(contactSection).toBeInTheDocument();
-      expect(contactSection).toHaveClass('ContactPage');
+    it('should render the contact page container', () => {
+      renderContact();
+      expect(document.querySelector('.ContactPage')).toBeInTheDocument();
     });
 
-    it('renders main heading', () => {
-      const heading = screen.getByRole('heading', { level: 1 });
-      expect(heading).toBeInTheDocument();
-      expect(heading).toHaveTextContent('MY MAGICAL BEDTIME');
-      expect(heading).toHaveClass('contact-h1');
+    it('should render the main heading', () => {
+      renderContact();
+      expect(screen.getByText('Get in Touch!')).toBeInTheDocument();
     });
 
-    it('renders "Get in Touch" section', () => {
-      const getInTouchHeading = screen.getByRole('heading', { level: 2 });
-      expect(getInTouchHeading).toBeInTheDocument();
-      expect(getInTouchHeading).toHaveTextContent('Get in Touch');
-    });
-
-    it('renders contact description', () => {
-      const description = screen.getByText("We'd love to hear from you! Fill out the form or reach out directly.");
-      expect(description).toBeInTheDocument();
-    });
-
-    it('renders contact information section', () => {
-      const contactInfoHeading = screen.getByRole('heading', { level: 3 });
-      expect(contactInfoHeading).toBeInTheDocument();
-      expect(contactInfoHeading).toHaveTextContent('Contact Information');
-    });
-
-    it('renders contact image', () => {
-      const contactImage = screen.getByRole('img', { name: /contact illustration/i });
-      expect(contactImage).toBeInTheDocument();
-      expect(contactImage).toHaveAttribute('src', 'mocked-signin-image.png');
-      expect(contactImage).toHaveClass('contact-image');
+    it('should render the introductory text', () => {
+      renderContact();
+      expect(screen.getByText("We'd love to hear from you! Fill out the form or reach out directly.")).toBeInTheDocument();
     });
   });
 
-  describe('Form Elements', () => {
-    it('renders contact form', () => {
+  describe('Contact Form', () => {
+    it('should render the contact form', () => {
+      renderContact();
       const form = document.querySelector('.contact-form');
       expect(form).toBeInTheDocument();
-      expect(form).toHaveClass('contact-form');
     });
 
-    it('renders name input field', () => {
+    it('should render name input field', () => {
+      renderContact();
       const nameInput = screen.getByPlaceholderText('Your Name');
       expect(nameInput).toBeInTheDocument();
       expect(nameInput).toHaveAttribute('type', 'text');
       expect(nameInput).toHaveAttribute('name', 'name');
-      expect(nameInput).toHaveAttribute('required');
-      expect(nameInput).toHaveClass('contact-input');
+      expect(nameInput).toBeRequired();
     });
 
-    it('renders email input field', () => {
+    it('should render email input field', () => {
+      renderContact();
       const emailInput = screen.getByPlaceholderText('Your Email');
       expect(emailInput).toBeInTheDocument();
       expect(emailInput).toHaveAttribute('type', 'email');
       expect(emailInput).toHaveAttribute('name', 'email');
-      expect(emailInput).toHaveAttribute('required');
-      expect(emailInput).toHaveClass('contact-input');
+      expect(emailInput).toBeRequired();
     });
 
-    it('renders message textarea', () => {
-      const messageTextarea = screen.getByPlaceholderText('Your Message');
+    it('should render message textarea', () => {
+      renderContact();
+      const messageTextarea = screen.getByPlaceholderText('Your Message or Feedback');
       expect(messageTextarea).toBeInTheDocument();
       expect(messageTextarea).toHaveAttribute('name', 'message');
-      expect(messageTextarea).toHaveAttribute('required');
       expect(messageTextarea).toHaveAttribute('rows', '5');
-      expect(messageTextarea).toHaveClass('contact-textarea');
+      expect(messageTextarea).toBeRequired();
     });
 
-    it('renders submit button', () => {
-      const submitButton = screen.getByRole('button', { name: /send message/i });
+    it('should render submit button', () => {
+      renderContact();
+      const submitButton = screen.getByRole('button', { name: 'SEND MESSAGE' });
       expect(submitButton).toBeInTheDocument();
       expect(submitButton).toHaveAttribute('type', 'submit');
       expect(submitButton).toHaveClass('contact-submit-btn');
     });
 
-    it('renders placeholder notice', () => {
-      const placeholderNotice = screen.getByText(/this form is currently a placeholder/i);
-      expect(placeholderNotice).toBeInTheDocument();
-      expect(placeholderNotice).toHaveClass('contact-note');
-    });
-  });
-
-  describe('Contact Information', () => {
-    it('displays email address', () => {
-      const email = screen.getByText('Email: support@mymagicalbedtime.com');
-      expect(email).toBeInTheDocument();
-    });
-
-    it('displays phone number', () => {
-      const phone = screen.getByText('Phone: (617) 353-8919');
-      expect(phone).toBeInTheDocument();
-    });
-
-    it('displays location information', () => {
-      expect(screen.getByText('Location: Department of Computer Science')).toBeInTheDocument();
-      expect(screen.getByText('Boston University')).toBeInTheDocument();
-      expect(screen.getByText('665 Commonwealth Avenue')).toBeInTheDocument();
-      expect(screen.getByText('Boston, MA 02215')).toBeInTheDocument();
-    });
-  });
-
-  describe('Google Maps Integration', () => {
-    it('renders map iframe', () => {
-      const mapIframe = screen.getByTitle('BU Computer Science Department');
-      expect(mapIframe).toBeInTheDocument();
-      expect(mapIframe).toHaveAttribute('width', '600');
-      expect(mapIframe).toHaveAttribute('height', '450');
-      expect(mapIframe).toHaveAttribute('loading', 'lazy');
-    });
-
-    it('map iframe has correct Google Maps embed URL', () => {
-      const mapIframe = screen.getByTitle('BU Computer Science Department');
-      const expectedUrlPattern = /^https:\/\/www\.google\.com\/maps\/embed/;
-      expect(mapIframe.getAttribute('src')).toMatch(expectedUrlPattern);
-    });
-
-    it('map iframe has proper security attributes', () => {
-      const mapIframe = screen.getByTitle('BU Computer Science Department');
-      expect(mapIframe).toHaveAttribute('referrerPolicy', 'no-referrer-when-downgrade');
-      expect(mapIframe.style.border).toBe('0px');
-    });
-  });
-
-  describe('Form Interactions', () => {
-    it('allows user to type in name field', async () => {
+    it('should allow user to type in name field', async () => {
+      renderContact();
       const user = userEvent.setup();
-      const nameInput = screen.getByPlaceholderText('Your Name');
       
+      const nameInput = screen.getByPlaceholderText('Your Name');
       await user.type(nameInput, 'John Doe');
       
       expect(nameInput).toHaveValue('John Doe');
     });
 
-    it('allows user to type in email field', async () => {
+    it('should allow user to type in email field', async () => {
+      renderContact();
       const user = userEvent.setup();
+      
       const emailInput = screen.getByPlaceholderText('Your Email');
+      await user.type(emailInput, 'john@example.com');
       
-      await user.type(emailInput, 'john.doe@example.com');
-      
-      expect(emailInput).toHaveValue('john.doe@example.com');
+      expect(emailInput).toHaveValue('john@example.com');
     });
 
-    it('allows user to type in message field', async () => {
+    it('should allow user to type in message field', async () => {
+      renderContact();
       const user = userEvent.setup();
-      const messageTextarea = screen.getByPlaceholderText('Your Message');
       
+      const messageTextarea = screen.getByPlaceholderText('Your Message or Feedback');
       await user.type(messageTextarea, 'This is a test message');
       
       expect(messageTextarea).toHaveValue('This is a test message');
     });
 
-    it('form submission prevents default behavior', async () => {
+    it('should validate email format', async () => {
+      renderContact();
       const user = userEvent.setup();
-      const form = document.querySelector('.contact-form');
-      const submitButton = screen.getByRole('button', { name: /send message/i });
       
-      // Fill out the form
-      await user.type(screen.getByPlaceholderText('Your Name'), 'John Doe');
-      await user.type(screen.getByPlaceholderText('Your Email'), 'john@example.com');
-      await user.type(screen.getByPlaceholderText('Your Message'), 'Test message');
+      const emailInput = screen.getByPlaceholderText('Your Email');
+      const submitButton = screen.getByRole('button', { name: 'SEND MESSAGE' });
       
-      // Submit the form
-      await user.click(submitButton);
+      // Type invalid email
+      await user.type(emailInput, 'invalid-email');
       
-      // Form should still be present (not navigated away)
-      expect(form).toBeInTheDocument();
-    });
-
-    it('clears form fields after typing and clearing', async () => {
-      const user = userEvent.setup();
-      const nameInput = screen.getByPlaceholderText('Your Name');
-      
-      await user.type(nameInput, 'John Doe');
-      await user.clear(nameInput);
-      
-      expect(nameInput).toHaveValue('');
+      // Email input should have invalid state
+      expect(emailInput.validity.valid).toBe(false);
     });
   });
 
-  describe('Form Validation', () => {
-    it('required fields have required attribute', () => {
+  describe('Contact Information Section', () => {
+    it('should render contact information heading', () => {
+      renderContact();
+      expect(screen.getByText('Contact Information')).toBeInTheDocument();
+    });
+
+    it('should render email information', () => {
+      renderContact();
+      expect(screen.getByText('Email:')).toBeInTheDocument();
+      expect(screen.getByText('support@mymagicalbedtime.com')).toBeInTheDocument();
+    });
+
+    it('should render phone information', () => {
+      renderContact();
+      expect(screen.getByText('Phone:')).toBeInTheDocument();
+      expect(screen.getByText('(617) 353-8919')).toBeInTheDocument();
+    });
+
+    it('should render location heading', () => {
+      renderContact();
+      expect(screen.getByText('Location:')).toBeInTheDocument();
+    });
+
+    it('should render complete address', () => {
+      renderContact();
+      expect(screen.getByText('Department of Computer Science')).toBeInTheDocument();
+      expect(screen.getByText('Boston University')).toBeInTheDocument();
+      expect(screen.getByText('665 Commonwealth Avenue')).toBeInTheDocument();
+      expect(screen.getByText('Boston, MA 02215')).toBeInTheDocument();
+    });
+
+    it('should have contact info section with proper class', () => {
+      renderContact();
+      const infoSection = document.querySelector('.contact-info');
+      expect(infoSection).toBeInTheDocument();
+    });
+  });
+
+  describe('Map Section', () => {
+    it('should render the map container', () => {
+      renderContact();
+      const mapContainer = document.querySelector('.contact-map');
+      expect(mapContainer).toBeInTheDocument();
+    });
+
+    it('should render the Google Maps iframe', () => {
+      renderContact();
+      const iframe = screen.getByTitle('BU Computer Science Department');
+      expect(iframe).toBeInTheDocument();
+    });
+
+    it('should render map in correct section', () => {
+      renderContact();
+      const mapSection = document.querySelector('.contact-info-map-section');
+      const mapContainer = mapSection.querySelector('.contact-map');
+      expect(mapContainer).toBeInTheDocument();
+    });
+  });
+
+  describe('Layout and Styling', () => {
+    it('should have correct class names for styling', () => {
+      renderContact();
+      
+      expect(document.querySelector('.ContactPage')).toBeInTheDocument();
+      expect(document.querySelector('.contact-container')).toBeInTheDocument();
+      expect(document.querySelector('.contact-form')).toBeInTheDocument();
+      expect(document.querySelector('.contact-info-map-section')).toBeInTheDocument();
+    });
+
+    it('should have contact input fields with correct class', () => {
+      renderContact();
+      
       const nameInput = screen.getByPlaceholderText('Your Name');
       const emailInput = screen.getByPlaceholderText('Your Email');
-      const messageTextarea = screen.getByPlaceholderText('Your Message');
+      
+      expect(nameInput).toHaveClass('contact-input');
+      expect(emailInput).toHaveClass('contact-input');
+    });
+
+    it('should have textarea with correct class', () => {
+      renderContact();
+      
+      const textarea = screen.getByPlaceholderText('Your Message or Feedback');
+      expect(textarea).toHaveClass('contact-textarea');
+    });
+  });
+
+  describe('Accessibility', () => {
+    it('should have accessible form labels through placeholders', () => {
+      renderContact();
+      
+      expect(screen.getByPlaceholderText('Your Name')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Your Email')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Your Message or Feedback')).toBeInTheDocument();
+    });
+
+    it('should have required attributes on form fields', () => {
+      renderContact();
+      
+      const nameInput = screen.getByPlaceholderText('Your Name');
+      const emailInput = screen.getByPlaceholderText('Your Email');
+      const messageTextarea = screen.getByPlaceholderText('Your Message or Feedback');
       
       expect(nameInput).toBeRequired();
       expect(emailInput).toBeRequired();
       expect(messageTextarea).toBeRequired();
     });
 
-    it('email field accepts valid email format', async () => {
-      const user = userEvent.setup();
-      const emailInput = screen.getByPlaceholderText('Your Email');
+    it('should have proper heading hierarchy', () => {
+      renderContact();
       
-      await user.type(emailInput, 'valid.email@example.com');
+      const h2 = screen.getByRole('heading', { level: 2, name: 'Get in Touch!' });
+      const h3 = screen.getByRole('heading', { level: 3, name: 'Contact Information' });
+      const h4 = screen.getByRole('heading', { level: 4, name: 'Location:' });
       
-      expect(emailInput).toHaveValue('valid.email@example.com');
-      expect(emailInput.validity.valid).toBe(true);
-    });
-
-    it('email field shows invalid for malformed email', async () => {
-      const user = userEvent.setup();
-      const emailInput = screen.getByPlaceholderText('Your Email');
-      
-      await user.type(emailInput, 'invalid-email');
-      
-      expect(emailInput).toHaveValue('invalid-email');
-      expect(emailInput.validity.valid).toBe(false);
+      expect(h2).toBeInTheDocument();
+      expect(h3).toBeInTheDocument();
+      expect(h4).toBeInTheDocument();
     });
   });
 
-  describe('Complete User Flow', () => {
-    it('user can fill out complete form', async () => {
+  describe('Form Validation', () => {
+    it('should not submit with empty fields', async () => {
+      renderContact();
       const user = userEvent.setup();
       
-      // Fill out all fields
-      await user.type(screen.getByPlaceholderText('Your Name'), 'Jane Smith');
-      await user.type(screen.getByPlaceholderText('Your Email'), 'jane.smith@example.com');
-      await user.type(screen.getByPlaceholderText('Your Message'), 'Hello, I would like to know more about your services.');
+      const submitButton = screen.getByRole('button', { name: 'SEND MESSAGE' });
+      const form = document.querySelector('.contact-form');
       
-      // Verify all fields are filled
-      expect(screen.getByPlaceholderText('Your Name')).toHaveValue('Jane Smith');
-      expect(screen.getByPlaceholderText('Your Email')).toHaveValue('jane.smith@example.com');
-      expect(screen.getByPlaceholderText('Your Message')).toHaveValue('Hello, I would like to know more about your services.');
+      // Check form validity before submission
+      expect(form.checkValidity()).toBe(false);
       
-      // Submit form
-      const submitButton = screen.getByRole('button', { name: /send message/i });
       await user.click(submitButton);
       
-      // Form should still be present with values (since preventDefault is used)
-      expect(screen.getByPlaceholderText('Your Name')).toHaveValue('Jane Smith');
+      // Form should still be on the page (not submitted)
+      expect(form).toBeInTheDocument();
     });
-  });
 
-  describe('Accessibility', () => {
-    it('form has proper ARIA labels through placeholders', () => {
+    it('should accept valid form data', async () => {
+      renderContact();
+      const user = userEvent.setup();
+      
       const nameInput = screen.getByPlaceholderText('Your Name');
       const emailInput = screen.getByPlaceholderText('Your Email');
-      const messageTextarea = screen.getByPlaceholderText('Your Message');
+      const messageTextarea = screen.getByPlaceholderText('Your Message or Feedback');
       
-      expect(nameInput).toHaveAttribute('placeholder', 'Your Name');
-      expect(emailInput).toHaveAttribute('placeholder', 'Your Email');
-      expect(messageTextarea).toHaveAttribute('placeholder', 'Your Message');
-    });
-
-    it('iframe has proper title for screen readers', () => {
-      const iframe = screen.getByTitle('BU Computer Science Department');
-      expect(iframe).toBeInTheDocument();
-    });
-
-    it('image has proper alt text', () => {
-      const image = screen.getByAltText('Contact Illustration');
-      expect(image).toBeInTheDocument();
+      await user.type(nameInput, 'John Doe');
+      await user.type(emailInput, 'john@example.com');
+      await user.type(messageTextarea, 'This is a test message');
+      
+      const form = document.querySelector('.contact-form');
+      expect(form.checkValidity()).toBe(true);
     });
   });
 
-  describe('Error Handling', () => {
-    it('handles form submission with empty fields', async () => {
+  describe('Integration', () => {
+    it('should render all sections in correct order', () => {
+      renderContact();
+      
+      const containers = document.querySelectorAll('.contact-container');
+      
+      // First container should have the form
+      expect(containers[0].querySelector('.contact-form')).toBeInTheDocument();
+      
+      // Second container should have contact info and map
+      expect(containers[1].querySelector('.contact-info')).toBeInTheDocument();
+      expect(containers[1].querySelector('.contact-map')).toBeInTheDocument();
+    });
+
+    it('should maintain form state across interactions', async () => {
+      renderContact();
       const user = userEvent.setup();
-      const submitButton = screen.getByRole('button', { name: /send message/i });
       
-      // Try to submit empty form
-      await user.click(submitButton);
+      const nameInput = screen.getByPlaceholderText('Your Name');
+      const emailInput = screen.getByPlaceholderText('Your Email');
       
-      // Form should still be present
-      expect(document.querySelector('.contact-form')).toBeInTheDocument();
+      await user.type(nameInput, 'John');
+      await user.type(emailInput, 'john@test.com');
+      
+      // Values should persist
+      expect(nameInput).toHaveValue('John');
+      expect(emailInput).toHaveValue('john@test.com');
+      
+      // Continue typing
+      await user.type(nameInput, ' Doe');
+      expect(nameInput).toHaveValue('John Doe');
     });
-  });
-});
-
-describe('Contact Component Styling', () => {
-  it('applies correct CSS classes', () => {
-    render(<Contact />);
-    
-    const section = document.querySelector('.ContactPage');
-    expect(section).toHaveClass('ContactPage');
-    
-    const heading = screen.getByRole('heading', { level: 1 });
-    expect(heading).toHaveClass('contact-h1');
-    
-    const form = document.querySelector('.contact-form');
-    expect(form).toHaveClass('contact-form');
-  });
-});
-
-describe('External Dependencies', () => {
-  it('handles missing image', () => {
-    // This test ensures the component doesn't break if the image fails to load
-    render(<Contact />);
-    const image = screen.getByAltText('Contact Illustration');
-    
-    // Simulate image load error
-    fireEvent.error(image);
-    
-    // Component should still be rendered
-    expect(document.querySelector('.ContactPage')).toBeInTheDocument();
   });
 });
