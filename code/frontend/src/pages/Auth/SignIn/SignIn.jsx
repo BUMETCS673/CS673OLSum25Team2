@@ -100,7 +100,7 @@ const SignIn = () => {
             </button>
           </form>
           <p className="signup-text">
-            Don’t have an account? <Link to="/signup">Sign up</Link>
+            Don't have an account? <Link to="/signup">Sign up</Link>
           </p>
 
           <div className="divider">

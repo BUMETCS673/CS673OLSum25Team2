@@ -8,6 +8,7 @@ import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useSignUp } from "../../../hooks/Auth/useSignUp";
 import { useNavigate } from 'react-router-dom';
+
 const SignUp = () => {
   const Navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
